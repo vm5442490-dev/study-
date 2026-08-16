@@ -19,6 +19,11 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3665825190622425~2291703522"/>
+            
+        <!-- Suppress Firebase Analytics warning since we are not using Firebase -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
 
         <activity
             android:name=".MainActivity"
