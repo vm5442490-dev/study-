@@ -1,0 +1,2735 @@
+<!--
+================================================================================
+SUPER STUDY ADMIN PANEL - ALL-IN-ONE BLOGGER PAGE TEMPLATE
+================================================================================
+How to use in Blogger:
+1. Open Blogger.com -> Pages -> "+ New Page"
+2. Switch editor mode to "HTML View" (Click the pencil icon -> select HTML view)
+3. Paste ALL content below into the editor.
+4. Set Page title: "Super Study Admin"
+5. Click "Publish".
+================================================================================
+-->
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPER STUDY ADMIN</title>
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client (Official CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --secondary: #0ea5e9;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --sidebar-w: 260px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background-color: #f8fafc;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+      padding: 20px;
+    }
+    .auth-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-logo {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 26px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+    .auth-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .auth-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    #admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+    .sidebar {
+      width: var(--sidebar-w);
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 40;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+    }
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .sidebar-sub {
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      padding: 12px 12px 4px 12px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-item i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      color: #64748b;
+      transition: color 0.15s;
+    }
+    .nav-item:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .nav-item:hover i {
+      color: var(--primary);
+    }
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .nav-item.active i {
+      color: var(--primary);
+    }
+    .sidebar-footer {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .admin-profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .profile-info {
+      line-height: 1.2;
+    }
+    .profile-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .profile-role {
+      font-size: 10px;
+      color: var(--success);
+      font-weight: 600;
+    }
+    .main-wrapper {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-bar {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #334155;
+      cursor: pointer;
+    }
+    .breadcrumb-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .breadcrumb-page {
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--success-light);
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 1.8s infinite;
+    }
+    .content-container {
+      padding: 28px;
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .stat-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .quick-actions-bar {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 28px;
+    }
+    .quick-actions-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .quick-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-body {
+      padding: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .form-label span.req {
+      color: var(--danger);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: #0f172a;
+      background-color: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+    .form-file-input {
+      padding: 8px;
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--radius-sm);
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #ffffff; }
+    .btn-success:hover { background: #059669; }
+    .btn-danger { background: var(--danger); color: #ffffff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-icon { width: 32px; height: 32px; padding: 0; border-radius: 6px; }
+    .table-responsive { width: 100%; overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    .data-table th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: #475569;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+    .data-table tr:hover td { background: #fafafa; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-success { background: var(--success-light); color: #065f46; }
+    .badge-warning { background: var(--warning-light); color: #92400e; }
+    .badge-danger { background: var(--danger-light); color: #991b1b; }
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+    .badge-neutral { background: #f1f5f9; color: #475569; }
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .empty-icon { font-size: 42px; color: #cbd5e1; margin-bottom: 12px; }
+    .empty-title { font-size: 15px; font-weight: 700; color: #334155; }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: #0f172a; }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #f8fafc;
+    }
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .toast.toast-success i { color: #34d399; }
+    .toast.toast-error i { color: #f87171; }
+    .toast.toast-warning i { color: #fbbf24; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+    @media (max-width: 992px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-wrapper { margin-left: 0; }
+      .mobile-toggle { display: block; }
+      .content-container { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo"><i class="fa-solid fa-shield-halved"></i></div>
+        <h1 class="auth-title">Super Study Admin</h1>
+        <p class="auth-subtitle">Secure Supabase Master Control Portal</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleAdminLogin(event)">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">Admin Email Address <span class="req">*</span></label>
+          <input type="email" id="login-email" required value="vm544806@gmail.com" placeholder="vm544806@gmail.com" class="form-input" autocomplete="email">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">Password <span class="req">*</span></label>
+          <input type="password" id="login-password" required value="Vishal1234" placeholder="••••••••••••" class="form-input" autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="btn-login" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700;">
+          <i class="fa-solid fa-lock-open"></i> Sign In to Admin Panel
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center;">
+        <span style="font-size: 12px; color: #475569; font-weight: 600; display: block; margin-bottom: 4px;">
+          <i class="fa-solid fa-key text-amber-500"></i> Direct Login ID & Password
+        </span>
+        <code style="font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">vm544806@gmail.com</code> | <code style="font-size: 11px; color: #059669; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">Vishal1234</code>
+      </div>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #f1f5f9; text-align: center;">
+        <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">
+          <i class="fa-solid fa-shield text-emerald-500"></i> Direct Supabase Sync &bull; Student App Connected
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTER DASHBOARD APP -->
+  <div id="admin-app" style="display: none;">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div>
+          <div class="sidebar-title">SUPER STUDY</div>
+          <div class="sidebar-sub">Master Admin</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <button class="nav-item active" onclick="navigateTo('dashboard')" id="nav-dashboard">
+          <i class="fa-solid fa-chart-pie"></i><span>Dashboard Overview</span>
+        </button>
+
+        <div class="nav-section-label">Academic Content</div>
+        <button class="nav-item" onclick="navigateTo('classes')" id="nav-classes">
+          <i class="fa-solid fa-school"></i><span>Classes</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('subjects')" id="nav-subjects">
+          <i class="fa-solid fa-book-open"></i><span>Subjects</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('chapters')" id="nav-chapters">
+          <i class="fa-solid fa-list-ol"></i><span>Chapters</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('books')" id="nav-books">
+          <i class="fa-solid fa-book-bookmark"></i><span>Books & NCERT</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('notes')" id="nav-notes">
+          <i class="fa-solid fa-note-sticky"></i><span>Study Notes</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('model_papers')" id="nav-model_papers">
+          <i class="fa-solid fa-file-lines"></i><span>Model Papers 2026</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('pyq')" id="nav-pyq">
+          <i class="fa-solid fa-clock-rotate-left"></i><span>Previous Year (PYQ)</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('pdfs')" id="nav-pdfs">
+          <i class="fa-solid fa-file-pdf"></i><span>PDFs & Documents</span>
+        </button>
+
+        <div class="nav-section-label">Test & Examination</div>
+        <button class="nav-item" onclick="navigateTo('tests')" id="nav-tests">
+          <i class="fa-solid fa-pen-ruler"></i><span>Online Tests</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('daily_quiz')" id="nav-daily_quiz">
+          <i class="fa-solid fa-bolt text-amber-500"></i><span>Daily Live Quiz</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('questions')" id="nav-questions">
+          <i class="fa-solid fa-circle-question"></i><span>Question Bank (ImgBB)</span>
+        </button>
+
+        <div class="nav-section-label">Communication & Live Feed</div>
+        <button class="nav-item" onclick="navigateTo('announcements')" id="nav-announcements">
+          <i class="fa-solid fa-bullhorn"></i><span>Announcements & Flash</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('daily_updates')" id="nav-daily_updates">
+          <i class="fa-solid fa-newspaper"></i><span>Daily Updates & News</span>
+        </button>
+
+        <div class="nav-section-label">Analytics & Records</div>
+        <button class="nav-item" onclick="navigateTo('test_attempts')" id="nav-test_attempts">
+          <i class="fa-solid fa-square-poll-vertical"></i><span>Student Test Attempts</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('leaderboard')" id="nav-leaderboard">
+          <i class="fa-solid fa-trophy text-amber-500"></i><span>Live Leaderboard</span>
+        </button>
+
+        <div class="nav-section-label">Database & Setup</div>
+        <button class="nav-item" onclick="navigateTo('sql_schema')" id="nav-sql_schema">
+          <i class="fa-solid fa-database text-indigo-500"></i><span>SQL Schema & Setup</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="admin-profile-pill">
+          <div class="profile-avatar"><i class="fa-solid fa-user-shield"></i></div>
+          <div class="profile-info">
+            <div class="profile-name" id="admin-user-email">Admin</div>
+            <div class="profile-role">Master Admin</div>
+          </div>
+        </div>
+        <button onclick="handleAdminLogout()" class="btn btn-secondary btn-icon" title="Logout">
+          <i class="fa-solid fa-right-from-bracket text-rose-500"></i>
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-bar">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+          <div class="breadcrumb-area">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-house"></i></span>
+            <span style="color: #cbd5e1;">/</span>
+            <span class="breadcrumb-page" id="page-title">Dashboard Overview</span>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="sync-badge">
+            <span class="sync-dot"></span>
+            <span>Student App Live</span>
+          </div>
+          <button onclick="refreshCurrentPage()" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
+          </button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div id="view-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MAIN MODAL -->
+  <div id="main-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Create Item</h3>
+        <button onclick="closeModal()" class="btn btn-secondary btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer">
+        <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+        <button id="modal-submit-btn" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF PREVIEW MODAL -->
+  <div id="pdf-preview-modal" class="modal-overlay" style="display:none; z-index:9999;">
+    <div class="modal-content" style="max-width:920px; width:95%; height:90vh; display:flex; flex-direction:column; padding:0; overflow:hidden; border-radius:14px;">
+      <div class="modal-header" style="padding:12px 18px; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+        <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+          <div style="background:#fee2e2; color:#ef4444; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div style="min-width:0;">
+            <h3 class="modal-title" id="pdf-preview-title" style="font-size:15px; margin:0; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">PDF Document Preview</h3>
+            <span id="pdf-preview-url-text" style="font-size:11px; color:#64748b; font-family:monospace; display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;"></span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+          <a id="pdf-preview-external-link" href="#" target="_blank" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> New Tab</a>
+          <button onclick="closePdfPreviewModal()" class="btn btn-secondary btn-icon"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="modal-body" style="flex:1; padding:0; background:#1e293b; position:relative; overflow:hidden;">
+        <iframe id="pdf-preview-iframe" src="" style="width:100%; height:100%; border:none; background:#f8fafc;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- EMBEDDED JAVASCRIPT LOGIC -->
+  <script>
+    const SUPABASE_CONFIG = {
+      url: "https://wbieadcwhteohabvrphh.supabase.co",
+      anonKey: "sb_publishable_PoFac7Jv1vw4E4epfaxzsQ_rs4JLizz"
+    };
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+
+    let currentRoute = 'dashboard';
+    let cachedClasses = [];
+    let cachedSubjects = [];
+    let cachedChapters = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const localLoggedIn = localStorage.getItem('superstudy_admin_logged_in');
+      const localEmail = localStorage.getItem('superstudy_admin_email') || 'admin@superstudy.com';
+
+      if (localLoggedIn === 'true') {
+        setupAdminSession({ email: localEmail });
+        return;
+      }
+
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          setupAdminSession(session.user);
+          return;
+        }
+      } catch (e) {
+        console.warn('Session restore error:', e);
+      }
+      
+      showAuthScreen();
+    });
+
+    function showAuthScreen() {
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('admin-app').style.display = 'none';
+    }
+
+    async function handleAdminLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+      // 1. Direct Master Admin Passkey Check (Instant access)
+      const validEmails = ['vm544806@gmail.com', 'admin@superstudy.com', 'admin@superstudy.in', 'admin', 'vm5442490@gmail.com'];
+      const validPasswords = ['Vishal1234', 'SuperStudy@2026', 'admin123', 'admin', 'vishal1234'];
+
+      if (
+        validEmails.includes(email.toLowerCase()) || 
+        password === 'Vishal1234' || 
+        password === 'SuperStudy@2026'
+      ) {
+        if (validPasswords.includes(password) || password === 'Vishal1234') {
+          const adminEmail = email.includes('@') ? email : 'vm544806@gmail.com';
+          localStorage.setItem('superstudy_admin_logged_in', 'true');
+          localStorage.setItem('superstudy_admin_email', adminEmail);
+          setupAdminSession({ email: adminEmail });
+          showToast('Master Admin Access Granted! Welcome Vishal.', 'success');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Sign In to Admin Panel';
+          return;
+        }
+      }
+
+      // 2. Try Supabase Auth API
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (!error && data.user) {
+          localStorage.setItem('superstudy_admin_logged_in', 'true');
+          localStorage.setItem('superstudy_admin_email', data.user.email);
+          setupAdminSession(data.user);
+          showToast('Login successful! Welcome Admin.', 'success');
+          return;
+        }
+
+        if (password === 'SuperStudy@2026') {
+          localStorage.setItem('superstudy_admin_logged_in', 'true');
+          localStorage.setItem('superstudy_admin_email', email);
+          setupAdminSession({ email: email });
+          showToast('Master Admin Access Granted!', 'success');
+          return;
+        }
+
+        throw new Error(error ? error.message : 'Invalid credentials. Use admin@superstudy.com / SuperStudy@2026');
+      } catch (err) {
+        showToast(err.message || 'Login failed. Use admin@superstudy.com / SuperStudy@2026', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Sign In to Admin Panel';
+      }
+    }
+
+    async function setupAdminSession(user) {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'flex';
+      document.getElementById('admin-user-email').innerText = user.email || 'Admin';
+      await preloadCurriculumLookups();
+      navigateTo('dashboard');
+    }
+
+    async function handleAdminLogout() {
+      localStorage.removeItem('superstudy_admin_logged_in');
+      localStorage.removeItem('superstudy_admin_email');
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (e) {
+        console.warn('Signout error:', e);
+      }
+      showAuthScreen();
+      showToast('Logged out successfully.', 'info');
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    async function preloadCurriculumLookups() {
+      try {
+        const [classesRes, subjectsRes, chaptersRes] = await Promise.all([
+          supabaseClient.from('classes').select('*').order('order_index', { ascending: true }),
+          supabaseClient.from('subjects').select('*'),
+          supabaseClient.from('chapters').select('*').order('chapter_number', { ascending: true })
+        ]);
+
+        if (classesRes.data && classesRes.data.length > 0) {
+          cachedClasses = classesRes.data;
+        } else {
+          cachedClasses = [
+            { id: "class-12", name: "Class 12th", code: "12" },
+            { id: "class-11", name: "Class 11th", code: "11" },
+            { id: "class-10", name: "Class 10th", code: "10" },
+            { id: "class-9", name: "Class 9th", code: "9" }
+          ];
+        }
+        cachedSubjects = subjectsRes.data || [];
+        cachedChapters = chaptersRes.data || [];
+      } catch (e) {
+        console.error("Error preloading lookups", e);
+      }
+    }
+
+    function navigateTo(route) {
+      currentRoute = route;
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      const activeNav = document.getElementById('nav-' + route);
+      if (activeNav) activeNav.classList.add('active');
+      document.getElementById('sidebar').classList.remove('open');
+
+      const titles = {
+        dashboard: "Dashboard Overview",
+        classes: "Classes Management",
+        subjects: "Subjects Management",
+        chapters: "Chapters Management",
+        books: "Books & Textbooks (NCERT & State Board)",
+        notes: "Study Notes Management",
+        model_papers: "Model Papers (2026)",
+        pyq: "Previous Year Question Papers (PYQ)",
+        pdfs: "PDF Documents & Formula Sheets",
+        tests: "Online Tests & Exam Papers",
+        daily_quiz: "Daily Live Quiz & Schedule",
+        questions: "Question Bank (MCQ & ImgBB Support)",
+        announcements: "Announcements & Flash Banners",
+        daily_updates: "Daily Updates & News Feed",
+        test_attempts: "Student Test Attempts",
+        leaderboard: "Live Leaderboard"
+      };
+      document.getElementById('page-title').innerText = titles[route] || "Admin Control";
+      renderRoute(route);
+    }
+
+    function refreshCurrentPage() {
+      preloadCurriculumLookups();
+      renderRoute(currentRoute);
+      showToast('Page refreshed with live Supabase data', 'success');
+    }
+
+    function renderRoute(route) {
+      const container = document.getElementById('view-container');
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-spinner fa-spin empty-icon" style="color: var(--primary);"></i>
+          <div class="empty-title">Loading live data from Supabase...</div>
+        </div>
+      `;
+
+      switch (route) {
+        case 'dashboard': renderDashboard(); break;
+        case 'classes': renderClasses(); break;
+        case 'subjects': renderSubjects(); break;
+        case 'chapters': renderChapters(); break;
+        case 'books': renderBooks(); break;
+        case 'notes': renderNotes(); break;
+        case 'model_papers': renderModelPapers(); break;
+        case 'pyq': renderPYQ(); break;
+        case 'pdfs': renderPDFs(); break;
+        case 'tests': renderTests(); break;
+        case 'daily_quiz': renderDailyQuiz(); break;
+        case 'questions': renderQuestions(); break;
+        case 'announcements': renderAnnouncements(); break;
+        case 'daily_updates': renderDailyUpdates(); break;
+        case 'test_attempts': renderTestAttempts(); break;
+        case 'leaderboard': renderLeaderboard(); break;
+        case 'sql_schema': renderSqlSchema(); break;
+        default: renderDashboard();
+      }
+    }
+
+    async function uploadFileToSupabase(file, bucketName = 'pdf-documents') {
+      if (!file) throw new Error("No file selected for upload.");
+      const timestamp = Date.now();
+      const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `${timestamp}_${cleanName}`;
+
+      const { data, error } = await supabaseClient.storage.from(bucketName).upload(path, file, { cacheControl: '3600', upsert: false });
+      if (error) throw error;
+
+      const { data: urlData } = supabaseClient.storage.from(bucketName).getPublicUrl(path);
+      return { path: path, publicUrl: urlData.publicUrl, sizeMB: (file.size / (1024 * 1024)).toFixed(1) + ' MB' };
+    }
+
+    async function renderDashboard() {
+      const container = document.getElementById('view-container');
+      try {
+        const [classesRes, subjectsRes, booksRes, notesRes, pdfsRes, questionsRes, testsRes, attemptsRes] = await Promise.all([
+          supabaseClient.from('classes').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('subjects').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('books').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('notes').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('pdf_documents').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('questions').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('tests').select('id', { count: 'exact', head: true }),
+          supabaseClient.from('test_attempts').select('id', { count: 'exact', head: true })
+        ]);
+
+        const counts = {
+          classes: classesRes.count || cachedClasses.length,
+          subjects: subjectsRes.count || 0,
+          books: booksRes.count || 0,
+          notes: notesRes.count || 0,
+          pdfs: pdfsRes.count || 0,
+          questions: questionsRes.count || 0,
+          tests: testsRes.count || 0,
+          attempts: attemptsRes.count || 0
+        };
+
+        container.innerHTML = `
+          <div class="quick-actions-bar">
+            <div class="quick-actions-title"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Quick Master Actions</div>
+            <div class="quick-btn-group">
+              <button onclick="openModal('create_test')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Create Online Test</button>
+              <button onclick="openModal('create_question')" class="btn btn-success btn-sm"><i class="fa-solid fa-plus"></i> Add Question (ImgBB)</button>
+              <button onclick="openModal('upload_pdf')" class="btn btn-secondary btn-sm"><i class="fa-solid fa-cloud-arrow-up text-rose-500"></i> Upload PDF Document</button>
+              <button onclick="openModal('create_book')" class="btn btn-secondary btn-sm"><i class="fa-solid fa-book-bookmark text-blue-500"></i> Add Book PDF</button>
+              <button onclick="openModal('create_note')" class="btn btn-secondary btn-sm"><i class="fa-solid fa-note-sticky text-teal-500"></i> Add Chapter Notes</button>
+              <button onclick="openModal('create_announcement')" class="btn btn-secondary btn-sm"><i class="fa-solid fa-bullhorn text-emerald-500"></i> Post Notice</button>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon-box" style="background:#eef2ff; color:#4f46e5;"><i class="fa-solid fa-school"></i></div><div><div class="stat-val">${counts.classes}</div><div class="stat-label">Total Classes</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#ecfeff; color:#06b6d4;"><i class="fa-solid fa-book-open"></i></div><div><div class="stat-val">${counts.subjects}</div><div class="stat-label">Subjects</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#eff6ff; color:#2563eb;"><i class="fa-solid fa-book-bookmark"></i></div><div><div class="stat-val">${counts.books}</div><div class="stat-label">Books (NCERT & State)</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#f0fdf4; color:#16a34a;"><i class="fa-solid fa-note-sticky"></i></div><div><div class="stat-val">${counts.notes}</div><div class="stat-label">Chapter Notes</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#fff1f2; color:#e11d48;"><i class="fa-solid fa-file-pdf"></i></div><div><div class="stat-val">${counts.pdfs}</div><div class="stat-label">PDFs & Model Sets</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#fdf4ff; color:#a855f7;"><i class="fa-solid fa-circle-question"></i></div><div><div class="stat-val">${counts.questions}</div><div class="stat-label">Questions in Bank</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#fffbeb; color:#d97706;"><i class="fa-solid fa-pen-ruler"></i></div><div><div class="stat-val">${counts.tests}</div><div class="stat-label">Online Tests</div></div></div>
+            <div class="stat-card"><div class="stat-icon-box" style="background:#f0fdfa; color:#0d9488;"><i class="fa-solid fa-user-graduate"></i></div><div><div class="stat-val">${counts.attempts}</div><div class="stat-label">Student Test Submissions</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-tower-broadcast text-indigo-600"></i> Backend & Student App Status</div></div>
+            <div class="card-body"><p style="font-size: 13px; color: #475569; line-height: 1.6;">Connected to live Supabase backend. Any update made here directly updates the Student App UI.</p></div>
+          </div>
+        `;
+      } catch (e) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-title text-danger">Error loading dashboard: ${e.message}</div></div>`;
+      }
+    }
+
+    async function renderClasses() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('classes').select('*').order('order_index', { ascending: true });
+      const classesList = (data && data.length > 0) ? data : cachedClasses;
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-school text-indigo-600"></i> Active Classes</div>
+            <button onclick="openModal('create_class')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Class</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Class Name</th><th>Class Code</th><th>Order</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${classesList.map(c => `
+                  <tr>
+                    <td style="font-weight:700;">${escapeHtml(c.name)}</td>
+                    <td><span class="badge badge-primary">${escapeHtml(c.id)}</span></td>
+                    <td>${c.order_index || 1}</td>
+                    <td style="text-align:right;"><button onclick="deleteRecord('classes', '${c.id}', renderClasses)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderSubjects() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('subjects').select('*').order('name', { ascending: true });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-book-open text-indigo-600"></i> Curriculum Subjects</div>
+            <button onclick="openModal('create_subject')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Subject</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Subject Name</th><th>Class</th><th>Subject Code</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="4" class="empty-state">No subjects found. Click "+ Add Subject" to create.</td></tr>' : 
+                  list.map(s => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(s.name)}</td>
+                      <td><span class="badge badge-neutral">${escapeHtml(s.class_id)}</span></td>
+                      <td>${escapeHtml(s.code || s.id)}</td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('subjects', '${s.id}', renderSubjects)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderChapters() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('chapters').select('*').order('chapter_number', { ascending: true });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-list-ol text-indigo-600"></i> Subject Chapters</div>
+            <button onclick="openModal('create_chapter')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Chapter</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Ch #</th><th>Chapter Title</th><th>Class</th><th>Subject ID</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">No chapters found.</td></tr>' :
+                  list.map(ch => `
+                    <tr>
+                      <td><span class="badge badge-neutral">Ch ${ch.chapter_number}</span></td>
+                      <td style="font-weight:700;">${escapeHtml(ch.title)}</td>
+                      <td>${escapeHtml(ch.class_id)}</td>
+                      <td>${escapeHtml(ch.subject_id)}</td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('chapters', '${ch.id}', renderChapters)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderBooks() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('books').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-book-bookmark text-blue-600"></i> Books Catalog (NCERT & State Board)</div>
+            <button onclick="openModal('create_book')" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Book PDF</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Book Title</th><th>Category</th><th>Class</th><th>Subject</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="6" class="empty-state">No books uploaded yet.</td></tr>' :
+                  list.map(b => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(b.title)}</td>
+                      <td><span class="badge badge-primary">${escapeHtml(b.category)}</span></td>
+                      <td>${escapeHtml(b.class_id)}</td>
+                      <td>${escapeHtml(b.subject_name || b.subject_id)}</td>
+                      <td><span class="badge ${b.is_published ? 'badge-success' : 'badge-neutral'}">${b.is_published ? 'Published' : 'Draft'}</span></td>
+                      <td style="text-align:right; white-space:nowrap;">
+                        ${b.pdf_url ? `<button onclick="openPdfPreview('${escapeHtml(b.pdf_url)}', '${escapeHtml(b.title)}')" class="btn btn-secondary btn-sm btn-icon" title="In-Admin PDF Preview"><i class="fa-solid fa-file-pdf text-rose-500"></i></button>` : ''}
+                        ${b.pdf_url ? `<a href="${b.pdf_url}" target="_blank" class="btn btn-secondary btn-sm btn-icon" title="Open in New Tab"><i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></a>` : ''}
+                        <button onclick="togglePublish('books', '${b.id}', ${!b.is_published}, renderBooks)" class="btn btn-secondary btn-sm"><i class="fa-solid ${b.is_published ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                        <button onclick="deleteRecord('books', '${b.id}', renderBooks)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderNotes() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('notes').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-note-sticky text-teal-600"></i> Chapter Study Notes</div>
+            <button onclick="openModal('create_note')" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Notes PDF</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Note Title</th><th>Class</th><th>Subject</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">No notes uploaded.</td></tr>' :
+                  list.map(n => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(n.title)}</td>
+                      <td><span class="badge badge-neutral">${escapeHtml(n.class_id)}</span></td>
+                      <td>${escapeHtml(n.subject_name || '')}</td>
+                      <td><span class="badge ${n.is_published ? 'badge-success' : 'badge-neutral'}">${n.is_published ? 'Published' : 'Draft'}</span></td>
+                      <td style="text-align:right; white-space:nowrap;">
+                        ${n.content && n.content.startsWith('http') ? `<button onclick="openPdfPreview('${escapeHtml(n.content)}', '${escapeHtml(n.title)}')" class="btn btn-secondary btn-sm btn-icon" title="In-Admin PDF Preview"><i class="fa-solid fa-file-pdf text-rose-500"></i></button>` : ''}
+                        ${n.content && n.content.startsWith('http') ? `<a href="${n.content}" target="_blank" class="btn btn-secondary btn-sm btn-icon" title="Open in New Tab"><i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></a>` : ''}
+                        <button onclick="togglePublish('notes', '${n.id}', ${!n.is_published}, renderNotes)" class="btn btn-secondary btn-sm"><i class="fa-solid ${n.is_published ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                        <button onclick="deleteRecord('notes', '${n.id}', renderNotes)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderModelPapers() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('model_papers').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-file-lines text-orange-500"></i> Board Exam 2026 Model Papers</div>
+            <button onclick="openModal('create_model_paper')" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Model Paper</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Model Paper Title</th><th>Class</th><th>Subject</th><th>Year</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="6" class="empty-state">No model papers uploaded.</td></tr>' :
+                  list.map(mp => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(mp.title)}</td>
+                      <td><span class="badge badge-neutral">${escapeHtml(mp.class_id)}</span></td>
+                      <td>${escapeHtml(mp.subject_name || '')}</td>
+                      <td><span class="badge badge-warning">${escapeHtml(mp.year || '2026')}</span></td>
+                      <td><span class="badge ${mp.is_published ? 'badge-success' : 'badge-neutral'}">${mp.is_published ? 'Published' : 'Draft'}</span></td>
+                      <td style="text-align:right; white-space:nowrap;">
+                        ${mp.file_url ? `<button onclick="openPdfPreview('${escapeHtml(mp.file_url)}', '${escapeHtml(mp.title)}')" class="btn btn-secondary btn-sm btn-icon" title="In-Admin PDF Preview"><i class="fa-solid fa-file-pdf text-rose-500"></i></button>` : ''}
+                        ${mp.file_url ? `<a href="${mp.file_url}" target="_blank" class="btn btn-secondary btn-sm btn-icon" title="Open in New Tab"><i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></a>` : ''}
+                        <button onclick="deleteRecord('model_papers', '${mp.id}', renderModelPapers)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderPYQ() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('previous_year_papers').select('*').order('year', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-clock-rotate-left text-purple-600"></i> Previous Year Papers (PYQ)</div>
+            <button onclick="openModal('create_pyq')" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Upload PYQ PDF</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Paper Title</th><th>Class</th><th>Subject</th><th>Year</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">No PYQ papers uploaded.</td></tr>' :
+                  list.map(p => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(p.title)}</td>
+                      <td><span class="badge badge-neutral">${escapeHtml(p.class_id)}</span></td>
+                      <td>${escapeHtml(p.subject_name || '')}</td>
+                      <td><span class="badge badge-primary">${escapeHtml(p.year)}</span></td>
+                      <td style="text-align:right; white-space:nowrap;">
+                        ${p.file_url ? `<button onclick="openPdfPreview('${escapeHtml(p.file_url)}', '${escapeHtml(p.title)}')" class="btn btn-secondary btn-sm btn-icon" title="In-Admin PDF Preview"><i class="fa-solid fa-file-pdf text-rose-500"></i></button>` : ''}
+                        ${p.file_url ? `<a href="${p.file_url}" target="_blank" class="btn btn-secondary btn-sm btn-icon" title="Open in New Tab"><i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></a>` : ''}
+                        <button onclick="deleteRecord('previous_year_papers', '${p.id}', renderPYQ)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderPDFs() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('pdf_documents').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-file-pdf text-rose-500"></i> PDF Documents & Formulas</div>
+            <button onclick="openModal('upload_pdf')" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Upload PDF</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Document Title</th><th>Category</th><th>Class</th><th>Subject</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">No PDFs uploaded.</td></tr>' :
+                  list.map(pdf => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(pdf.title)}</td>
+                      <td><span class="badge badge-primary">${escapeHtml(pdf.category)}</span></td>
+                      <td>${escapeHtml(pdf.class_id)}</td>
+                      <td>${escapeHtml(pdf.subject_name || '')}</td>
+                      <td style="text-align:right; white-space:nowrap;">
+                        <button onclick="openPdfPreview('${escapeHtml(pdf.file_url)}', '${escapeHtml(pdf.title)}')" class="btn btn-secondary btn-sm btn-icon" title="In-Admin PDF Preview"><i class="fa-solid fa-file-pdf text-rose-500"></i></button>
+                        <a href="${pdf.file_url}" target="_blank" class="btn btn-secondary btn-sm btn-icon" title="Open in New Tab"><i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i></a>
+                        <button onclick="deleteRecord('pdf_documents', '${pdf.id}', renderPDFs)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderTests() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('tests').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-pen-ruler text-indigo-600"></i> Online Tests & Exams</div>
+            <button onclick="openModal('create_test')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Create Online Test</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Test Title</th><th>Class & Subject</th><th>Duration</th><th>Daily Quiz?</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="6" class="empty-state">No online tests found.</td></tr>' :
+                  list.map(t => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(t.title)}</td>
+                      <td>${escapeHtml(t.class_id)} &bull; ${escapeHtml(t.subject_name || '')}</td>
+                      <td>${t.duration_minutes} Mins</td>
+                      <td>${t.is_daily_quiz ? '<span class="badge badge-warning">Daily Live Quiz</span>' : 'Standard'}</td>
+                      <td><span class="badge ${t.is_published ? 'badge-success' : 'badge-neutral'}">${t.is_published ? 'Live' : 'Draft'}</span></td>
+                      <td style="text-align:right;">
+                        <button onclick="togglePublish('tests', '${t.id}', ${!t.is_published}, renderTests)" class="btn btn-secondary btn-sm"><i class="fa-solid ${t.is_published ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                        <button onclick="deleteRecord('tests', '${t.id}', renderTests)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderDailyQuiz() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('tests').select('*').eq('is_daily_quiz', true).order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-bolt text-amber-500"></i> Daily Live Quiz Management</div>
+            <button onclick="openModal('create_daily_quiz')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Set Today's Daily Quiz</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Daily Quiz Title</th><th>Class & Subject</th><th>Duration</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">No Daily Live Quiz configured yet.</td></tr>' :
+                  list.map(t => `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(t.title)}</td>
+                      <td>${escapeHtml(t.class_id)} &bull; ${escapeHtml(t.subject_name || '')}</td>
+                      <td>${t.duration_minutes} Mins</td>
+                      <td><span class="badge ${t.is_published ? 'badge-success' : 'badge-neutral'}">${t.is_published ? 'Active in App' : 'Disabled'}</span></td>
+                      <td style="text-align:right;">
+                        <button onclick="togglePublish('tests', '${t.id}', ${!t.is_published}, renderDailyQuiz)" class="btn btn-secondary btn-sm"><i class="fa-solid ${t.is_published ? 'fa-toggle-on text-emerald-600' : 'fa-toggle-off'}"></i></button>
+                        <button onclick="deleteRecord('tests', '${t.id}', renderDailyQuiz)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderQuestions() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('questions').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap; gap:10px;">
+            <div class="card-title"><i class="fa-solid fa-circle-question text-indigo-600"></i> Master Question Bank (Total: ${list.length})</div>
+            <div style="display:flex; gap:8px;">
+              <button onclick="openModal('bulk_import_questions')" class="btn btn-success btn-sm"><i class="fa-solid fa-file-import"></i> Bulk JSON Import</button>
+              <button onclick="openModal('create_question')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Single Question</button>
+            </div>
+          </div>
+          <div style="padding:12px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; gap:12px; align-items:center;">
+            <input type="text" id="filter-q-search" oninput="filterQuestionsTable()" placeholder="Search questions by text or subject..." class="form-input" style="max-width:320px; font-size:12px; padding:6px 12px;">
+            <span style="font-size:12px; color:#64748b;"><i class="fa-solid fa-image text-indigo-500 mr-1"></i> ImgBB images and Hindi Devanagari fully supported</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-questions-bank">
+              <thead><tr><th>Question Text & ImgBB Image</th><th>Class & Subject</th><th>Correct</th><th>Difficulty</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="5" class="empty-state">Question Bank is empty. Click "+ Add Question" or "Bulk JSON Import".</td></tr>' :
+                  list.map(q => `
+                    <tr class="q-row-item">
+                      <td class="q-text-cell">
+                        <div style="font-weight:600; line-height:1.4;">${escapeHtml(q.question_text)}</div>
+                        ${q.image_url ? `<div style="margin-top:4px;"><a href="${q.image_url}" target="_blank" style="font-size:11px; color:#4f46e5; text-decoration:none;"><i class="fa-solid fa-image mr-1"></i> View ImgBB Image Attached</a></div>` : ''}
+                      </td>
+                      <td class="q-meta-cell"><span class="badge badge-neutral">${escapeHtml(q.class_id || '')} &bull; ${escapeHtml(q.subject_name || '')}</span></td>
+                      <td><span class="badge badge-success">Option ${escapeHtml(q.correct_option)}</span></td>
+                      <td><span class="badge ${q.difficulty === 'Hard' ? 'badge-danger' : (q.difficulty === 'Easy' ? 'badge-success' : 'badge-primary')}">${escapeHtml(q.difficulty || 'Medium')}</span></td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('questions', '${q.id}', renderQuestions)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function filterQuestionsTable() {
+      const q = (document.getElementById('filter-q-search')?.value || '').toLowerCase();
+      const rows = document.querySelectorAll('.q-row-item');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    async function renderAnnouncements() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('announcements').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-bullhorn text-emerald-600"></i> App Flash Notices & Banners</div>
+            <button onclick="openModal('create_announcement')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Post Announcement</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Notice Title & Description</th><th>Badge</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="4" class="empty-state">No announcements posted.</td></tr>' :
+                  list.map(a => `
+                    <tr>
+                      <td>
+                        <div style="font-weight:700;">${escapeHtml(a.title)}</div>
+                        <div style="font-size:12px; color:#64748b;">${escapeHtml(a.description || '')}</div>
+                      </td>
+                      <td><span class="badge badge-primary">${escapeHtml(a.badge || 'UPDATE')}</span></td>
+                      <td><span class="badge ${a.is_active ? 'badge-success' : 'badge-neutral'}">${a.is_active ? 'Active on App' : 'Hidden'}</span></td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('announcements', '${a.id}', renderAnnouncements)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderDailyUpdates() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('daily_updates').select('*').order('created_at', { ascending: false });
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-newspaper text-indigo-600"></i> Daily Study Updates & News</div>
+            <button onclick="openModal('create_daily_update')" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Post Daily Update</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Update Title</th><th>Date</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="3" class="empty-state">No daily updates posted.</td></tr>' :
+                  list.map(u => `
+                    <tr>
+                      <td>
+                        <div style="font-weight:700;">${escapeHtml(u.title)}</div>
+                        <div style="font-size:12px; color:#64748b;">${escapeHtml(u.content || '')}</div>
+                      </td>
+                      <td>${escapeHtml(u.date || '')}</td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('daily_updates', '${u.id}', renderDailyUpdates)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderTestAttempts() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('test_attempts').select('*').order('completed_at', { ascending: false }).limit(100);
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap; gap:10px;">
+            <div class="card-title"><i class="fa-solid fa-square-poll-vertical text-indigo-600"></i> Student Test Submissions & Results (Total: ${list.length})</div>
+            <button onclick="renderTestAttempts()" class="btn btn-secondary btn-sm"><i class="fa-solid fa-rotate mr-1"></i> Refresh Submissions</button>
+          </div>
+          <div style="padding:12px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="filter-att-search" oninput="filterAttemptsTable()" placeholder="Search by student name or test..." class="form-input" style="max-width:280px; font-size:12px; padding:6px 12px;">
+            <select id="filter-att-class" onchange="filterAttemptsTable()" class="form-select" style="max-width:180px; font-size:12px; padding:6px 12px;">
+              <option value="">All Classes</option>
+              <option value="Class 12">Class 12th</option>
+              <option value="Class 11">Class 11th</option>
+              <option value="Class 10">Class 10th</option>
+              <option value="Class 9">Class 9th</option>
+            </select>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-test-attempts">
+              <thead><tr><th>Student Name</th><th>Test Title</th><th>Class</th><th>Score & Marks</th><th>Accuracy</th><th>Time Taken</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="7" class="empty-state">No student test attempts found yet. When students submit quizzes in the app, their scores appear here in real-time.</td></tr>' :
+                  list.map(att => `
+                    <tr class="att-row-item">
+                      <td class="att-student-cell" style="font-weight:700;"><i class="fa-solid fa-user-graduate text-indigo-500 mr-2"></i>${escapeHtml(att.student_name || 'Student')}</td>
+                      <td class="att-test-cell">${escapeHtml(att.test_title || 'Test Quiz')}</td>
+                      <td class="att-class-cell"><span class="badge badge-neutral">${escapeHtml(att.student_class || 'Class 12')}</span></td>
+                      <td style="font-weight:800; color:#4f46e5;">${att.score} / ${att.total_marks || 20}</td>
+                      <td><span class="badge ${ (att.accuracy_percentage || 0) >= 80 ? 'badge-success' : ((att.accuracy_percentage || 0) >= 50 ? 'badge-warning' : 'badge-danger') }">${att.accuracy_percentage || Math.round(((att.score || 0)/(att.total_marks || 20))*100)}%</span></td>
+                      <td>${att.time_taken_seconds || 0}s</td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('test_attempts', '${att.id}', renderTestAttempts)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function filterAttemptsTable() {
+      const q = (document.getElementById('filter-att-search')?.value || '').toLowerCase();
+      const cls = (document.getElementById('filter-att-class')?.value || '').toLowerCase();
+      const rows = document.querySelectorAll('.att-row-item');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchesQ = !q || text.includes(q);
+        const matchesCls = !cls || text.includes(cls);
+        row.style.display = (matchesQ && matchesCls) ? '' : 'none';
+      });
+    }
+
+    async function renderLeaderboard() {
+      const container = document.getElementById('view-container');
+      const { data } = await supabaseClient.from('leaderboard').select('*').order('score', { ascending: false }).limit(50);
+      const list = data || [];
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-trophy text-amber-500"></i> Student Rank Leaderboard</div></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead><tr><th>Rank</th><th>Student Name</th><th>Class</th><th>Score</th><th>Accuracy</th><th style="text-align:right;">Action</th></tr></thead>
+              <tbody>
+                ${list.length === 0 ? '<tr><td colspan="6" class="empty-state">Leaderboard is empty. Attempts will automatically populate rank data.</td></tr>' :
+                  list.map((st, idx) => `
+                    <tr>
+                      <td style="font-weight:800; color:#4f46e5;">#${idx + 1}</td>
+                      <td style="font-weight:700;">${escapeHtml(st.student_name || 'Student')}</td>
+                      <td><span class="badge badge-neutral">${escapeHtml(st.student_class || 'Class 12')}</span></td>
+                      <td style="font-weight:800;">${st.score}</td>
+                      <td><span class="badge badge-success">${st.accuracy || 100}%</span></td>
+                      <td style="text-align:right;"><button onclick="deleteRecord('leaderboard', '${st.id}', renderLeaderboard)" class="btn btn-danger btn-sm btn-icon"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSqlSchema() {
+      const container = document.getElementById('view-container');
+      const sqlCode = `-- ==============================================================================
+-- SUPER STUDY APP & ADMIN - COMPLETE PRODUCTION SQL SCHEMA
+-- Run this in Supabase SQL Editor: https://supabase.com/dashboard/project/wbieadcwhteohabvrphh/sql
+-- ==============================================================================
+
+-- 1. Classes Table
+CREATE TABLE IF NOT EXISTS public.classes (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    code TEXT NOT NULL,
+    order_index INTEGER DEFAULT 1,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. Subjects Table
+CREATE TABLE IF NOT EXISTS public.subjects (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    code TEXT,
+    icon_name TEXT DEFAULT 'book',
+    color_hex TEXT DEFAULT '#4f46e5',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 3. Chapters Table
+CREATE TABLE IF NOT EXISTS public.chapters (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    subject_id TEXT NOT NULL,
+    chapter_number INTEGER DEFAULT 1,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 4. Books Catalog
+CREATE TABLE IF NOT EXISTS public.books (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    category TEXT DEFAULT 'NCERT Book',
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    cover_image_url TEXT,
+    pdf_url TEXT,
+    pages_count INTEGER DEFAULT 100,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 5. Study Notes Table
+CREATE TABLE IF NOT EXISTS public.notes (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    chapter_id TEXT,
+    chapter_title TEXT,
+    content TEXT,
+    summary TEXT,
+    key_points TEXT[],
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 6. Model Papers 2026 Table
+CREATE TABLE IF NOT EXISTS public.model_papers (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    year TEXT DEFAULT '2026',
+    file_url TEXT,
+    questions_count INTEGER DEFAULT 25,
+    duration_minutes INTEGER DEFAULT 90,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 7. Previous Year Papers (PYQ) Table
+CREATE TABLE IF NOT EXISTS public.previous_year_papers (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    year TEXT DEFAULT '2025',
+    exam_type TEXT DEFAULT 'Annual Board Exam',
+    file_url TEXT,
+    questions_count INTEGER DEFAULT 30,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 8. PDF Documents Table
+CREATE TABLE IF NOT EXISTS public.pdf_documents (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    category TEXT DEFAULT 'Study Material',
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    file_url TEXT NOT NULL,
+    file_size TEXT,
+    pages_count INTEGER DEFAULT 10,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 9. Online Tests & Quizzes Table
+CREATE TABLE IF NOT EXISTS public.tests (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    class_id TEXT NOT NULL,
+    subject_id TEXT,
+    subject_name TEXT,
+    duration_minutes INTEGER DEFAULT 15,
+    total_marks INTEGER DEFAULT 20,
+    passing_marks INTEGER DEFAULT 8,
+    questions_count INTEGER DEFAULT 10,
+    is_daily_quiz BOOLEAN DEFAULT false,
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 10. Master Question Bank (with ImgBB & Devanagari)
+CREATE TABLE IF NOT EXISTS public.questions (
+    id TEXT PRIMARY KEY,
+    test_id TEXT,
+    question_text TEXT NOT NULL,
+    image_url TEXT,
+    option_a TEXT NOT NULL,
+    option_b TEXT NOT NULL,
+    option_c TEXT NOT NULL,
+    option_d TEXT NOT NULL,
+    correct_option TEXT NOT NULL,
+    explanation TEXT,
+    difficulty TEXT DEFAULT 'Medium',
+    marks INTEGER DEFAULT 1,
+    class_id TEXT,
+    subject_id TEXT,
+    subject_name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 11. Announcements & Flash Notices Table
+CREATE TABLE IF NOT EXISTS public.announcements (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    badge TEXT DEFAULT 'UPDATE',
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 12. Daily Study Updates Table
+CREATE TABLE IF NOT EXISTS public.daily_updates (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT,
+    date TEXT,
+    tag TEXT DEFAULT 'DAILY UPDATE',
+    is_pinned BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 13. Student Test Attempts & Submissions
+CREATE TABLE IF NOT EXISTS public.test_attempts (
+    id TEXT PRIMARY KEY,
+    student_name TEXT NOT NULL,
+    student_class TEXT,
+    test_id TEXT,
+    test_title TEXT,
+    score INTEGER DEFAULT 0,
+    total_marks INTEGER DEFAULT 20,
+    accuracy_percentage INTEGER DEFAULT 100,
+    time_taken_seconds INTEGER DEFAULT 0,
+    completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 14. Rank Leaderboard Table
+CREATE TABLE IF NOT EXISTS public.leaderboard (
+    id TEXT PRIMARY KEY,
+    student_name TEXT NOT NULL,
+    student_class TEXT,
+    score INTEGER DEFAULT 0,
+    accuracy INTEGER DEFAULT 100,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ENABLE ROW LEVEL SECURITY AND PERMISSIVE POLICIES
+DO $$
+DECLARE
+    tbl text;
+    tables text[] := ARRAY['classes', 'subjects', 'chapters', 'books', 'notes', 'model_papers', 'previous_year_papers', 'pdf_documents', 'tests', 'questions', 'announcements', 'daily_updates', 'test_attempts', 'leaderboard'];
+BEGIN
+    FOREACH tbl IN ARRAY tables LOOP
+        EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY;', tbl);
+        EXECUTE format('DROP POLICY IF EXISTS "Public select policy on %s" ON public.%I;', tbl, tbl);
+        EXECUTE format('CREATE POLICY "Public select policy on %s" ON public.%I FOR SELECT USING (true);', tbl, tbl);
+        EXECUTE format('DROP POLICY IF EXISTS "Public insert policy on %s" ON public.%I;', tbl, tbl);
+        EXECUTE format('CREATE POLICY "Public insert policy on %s" ON public.%I FOR INSERT WITH CHECK (true);', tbl, tbl);
+        EXECUTE format('DROP POLICY IF EXISTS "Public update policy on %s" ON public.%I;', tbl, tbl);
+        EXECUTE format('CREATE POLICY "Public update policy on %s" ON public.%I FOR UPDATE USING (true);', tbl, tbl);
+        EXECUTE format('DROP POLICY IF EXISTS "Public delete policy on %s" ON public.%I;', tbl, tbl);
+        EXECUTE format('CREATE POLICY "Public delete policy on %s" ON public.%I FOR DELETE USING (true);', tbl, tbl);
+    END LOOP;
+END $$;
+
+-- 15. Supabase Storage Buckets Setup (Public PDF & Study Materials)
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('pdf-documents', 'pdf-documents', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('study-materials', 'study-materials', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Storage permissive public policies for uploads and downloads
+CREATE POLICY "Public can read pdf-documents" ON storage.objects FOR SELECT USING (bucket_id IN ('pdf-documents', 'study-materials'));
+CREATE POLICY "Public can upload pdf-documents" ON storage.objects FOR INSERT WITH CHECK (bucket_id IN ('pdf-documents', 'study-materials'));
+CREATE POLICY "Public can update pdf-documents" ON storage.objects FOR UPDATE USING (bucket_id IN ('pdf-documents', 'study-materials'));
+CREATE POLICY "Public can delete pdf-documents" ON storage.objects FOR DELETE USING (bucket_id IN ('pdf-documents', 'study-materials'));
+`;
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap; gap:10px;">
+            <div>
+              <div class="card-title"><i class="fa-solid fa-database text-indigo-600"></i> Supabase SQL Schema & Database Setup</div>
+              <div style="font-size:12px; color:#64748b; margin-top:2px;">Complete database definition script with all tables and RLS policies.</div>
+            </div>
+            <button onclick="copySqlSchema()" id="btn-copy-sql" class="btn btn-primary btn-sm"><i class="fa-solid fa-copy mr-1"></i> Copy Complete SQL</button>
+          </div>
+          <div style="padding:16px;">
+            <div style="background:#0f172a; border-radius:10px; padding:16px; position:relative;">
+              <textarea id="sql-schema-area" readonly style="width:100%; height:450px; background:transparent; color:#38bdf8; border:none; font-family:monospace; font-size:12px; line-height:1.5; resize:none; outline:none;">${sqlCode}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function copySqlSchema() {
+      const area = document.getElementById('sql-schema-area');
+      const btn = document.getElementById('btn-copy-sql');
+      if (area) {
+        area.select();
+        navigator.clipboard.writeText(area.value).then(() => {
+          showToast('SQL Schema copied to clipboard!', 'success');
+          if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Copied!';
+            setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy mr-1"></i> Copy Complete SQL'; }, 2500);
+          }
+        }).catch(() => {
+          showToast('Please select and copy text manually', 'info');
+        });
+      }
+    }
+
+    function openModal(actionType) {
+      const modal = document.getElementById('main-modal');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+      const submitBtn = document.getElementById('modal-submit-btn');
+
+      modal.style.display = 'flex';
+      const classOptions = cachedClasses.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+      const subjectOptions = cachedSubjects.map(s => `<option value="${s.id}" data-name="${escapeHtml(s.name)}">${escapeHtml(s.name)} (${s.class_id})</option>`).join('');
+
+      if (actionType === 'create_class') {
+        title.innerText = "Create New Class";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Class Name *</label><input type="text" id="inp-class-name" required placeholder="Class 12th" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class Code/ID *</label><input type="text" id="inp-class-id" required placeholder="class-12" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Order</label><input type="number" id="inp-class-order" value="1" class="form-input"></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateClass();
+      }
+      else if (actionType === 'create_subject') {
+        title.innerText = "Create New Subject";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Subject Name *</label><input type="text" id="inp-sub-name" required placeholder="Physics" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-sub-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Code *</label><input type="text" id="inp-sub-code" placeholder="PHY" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Color</label><input type="color" id="inp-sub-color" value="#4f46e5" class="form-input" style="height:42px; padding:2px;"></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateSubject();
+      }
+      else if (actionType === 'create_chapter') {
+        title.innerText = "Create New Chapter";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Chapter Title *</label><input type="text" id="inp-chap-title" required placeholder="विद्युत आवेश तथा क्षेत्र" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-chap-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject *</label><select id="inp-chap-sub" class="form-select">${subjectOptions}</select></div>
+            <div class="form-group"><label class="form-label">Chapter Number *</label><input type="number" id="inp-chap-num" value="1" class="form-input"></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateChapter();
+      }
+      else if (actionType === 'create_book') {
+        title.innerText = "Upload Book PDF";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Book Title *</label><input type="text" id="inp-bk-title" required placeholder="NCERT भौतिकी भाग 1 कक्षा 12" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Category *</label><select id="inp-bk-cat" class="form-select"><option value="NCERT Books">NCERT Books</option><option value="JAC Books">JAC Books</option><option value="Other Books">Other Books</option></select></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-bk-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group full-width"><label class="form-label">Subject *</label><select id="inp-bk-sub" class="form-select">${subjectOptions}</select></div>
+            
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-cloud-arrow-up text-indigo-600 mr-1"></i> Option A: Select Local PDF File (Supabase Storage)</label>
+              <input type="file" id="inp-bk-file" accept="application/pdf" class="form-file-input">
+              <div style="font-size:11px; color:#64748b; margin-top:4px;">File will be uploaded to Supabase Storage ('pdf-documents' bucket) and linked automatically.</div>
+            </div>
+
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-link text-indigo-600 mr-1"></i> Option B: OR Paste Direct PDF / Google Drive URL</label>
+              <input type="url" id="inp-bk-url" placeholder="https://... (Supabase, Google Drive, Dropbox, or direct .pdf link)" class="form-input">
+            </div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateBook();
+      }
+      else if (actionType === 'create_note') {
+        title.innerText = "Upload Notes PDF";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Note Title *</label><input type="text" id="inp-nt-title" required placeholder="Chapter 1 Handwritten Notes" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-nt-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject *</label><select id="inp-nt-sub" class="form-select">${subjectOptions}</select></div>
+            
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-cloud-arrow-up text-teal-600 mr-1"></i> Option A: Select Local PDF File (Supabase Storage)</label>
+              <input type="file" id="inp-nt-file" accept="application/pdf" class="form-file-input">
+            </div>
+
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-link text-teal-600 mr-1"></i> Option B: OR Paste Direct PDF URL</label>
+              <input type="url" id="inp-nt-url" placeholder="https://..." class="form-input">
+            </div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateNote();
+      }
+      else if (actionType === 'create_model_paper') {
+        title.innerText = "Upload Model Paper 2026";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Title *</label><input type="text" id="inp-mp-title" required placeholder="Physics 2026 Model Set 1" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-mp-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject *</label><select id="inp-mp-sub" class="form-select">${subjectOptions}</select></div>
+            <div class="form-group full-width"><label class="form-label">Year</label><input type="text" id="inp-mp-year" value="2026" class="form-input"></div>
+            
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-cloud-arrow-up text-orange-500 mr-1"></i> Option A: Select Local PDF File</label>
+              <input type="file" id="inp-mp-file" accept="application/pdf" class="form-file-input">
+            </div>
+
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-link text-orange-500 mr-1"></i> Option B: OR Paste Direct PDF URL</label>
+              <input type="url" id="inp-mp-url" placeholder="https://..." class="form-input">
+            </div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateModelPaper();
+      }
+      else if (actionType === 'create_pyq') {
+        title.innerText = "Upload PYQ PDF";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Title *</label><input type="text" id="inp-pyq-title" required placeholder="JAC Board 12th Physics 2025" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-pyq-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject *</label><select id="inp-pyq-sub" class="form-select">${subjectOptions}</select></div>
+            <div class="form-group full-width"><label class="form-label">Year *</label><input type="text" id="inp-pyq-year" value="2025" class="form-input"></div>
+            
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-cloud-arrow-up text-purple-600 mr-1"></i> Option A: Select Local PDF File</label>
+              <input type="file" id="inp-pyq-file" accept="application/pdf" class="form-file-input">
+            </div>
+
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-link text-purple-600 mr-1"></i> Option B: OR Paste Direct PDF URL</label>
+              <input type="url" id="inp-pyq-url" placeholder="https://..." class="form-input">
+            </div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreatePYQ();
+      }
+      else if (actionType === 'upload_pdf') {
+        title.innerText = "Upload PDF Document";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Title *</label><input type="text" id="inp-pdf-title" required placeholder="Physics Formulas" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Category *</label><select id="inp-pdf-cat" class="form-select"><option value="Study Material">Study Material</option><option value="Formula Sheet">Formula Sheet</option><option value="Syllabus">Syllabus</option></select></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-pdf-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group full-width"><label class="form-label">Subject *</label><select id="inp-pdf-sub" class="form-select">${subjectOptions}</select></div>
+            
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-cloud-arrow-up text-rose-500 mr-1"></i> Option A: Select Local PDF File (Supabase Storage)</label>
+              <input type="file" id="inp-pdf-file" accept="application/pdf" class="form-file-input">
+            </div>
+
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              <label class="form-label" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-link text-rose-500 mr-1"></i> Option B: OR Paste Direct PDF / Google Drive URL</label>
+              <input type="url" id="inp-pdf-url" placeholder="https://..." class="form-input">
+            </div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitUploadPDF();
+      }
+      else if (actionType === 'create_test' || actionType === 'create_daily_quiz') {
+        const isDaily = actionType === 'create_daily_quiz';
+        title.innerText = isDaily ? "Set Daily Live Quiz" : "Create Online Test";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Test Title *</label><input type="text" id="inp-t-title" required placeholder="Physics Live Quiz" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Class *</label><select id="inp-t-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject *</label><select id="inp-t-sub" class="form-select">${subjectOptions}</select></div>
+            <div class="form-group"><label class="form-label">Duration (Mins) *</label><input type="number" id="inp-t-duration" value="15" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Marks</label><input type="number" id="inp-t-marks" value="20" class="form-input"></div>
+            <div class="form-group full-width"><label class="form-label"><input type="checkbox" id="inp-t-daily" ${isDaily ? 'checked' : ''}> Set as Daily Live Quiz</label></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateTest();
+      }
+      else if (actionType === 'create_question') {
+        title.innerText = "Add Question to Question Bank (ImgBB)";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Question Text *</label><textarea id="inp-q-text" rows="3" required placeholder="प्रश्न लिखें..." class="form-textarea"></textarea></div>
+            <div class="form-group full-width" style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+              <label class="form-label"><i class="fa-solid fa-image text-indigo-500 mr-1"></i> ImgBB Image URL (Optional)</label>
+              <input type="url" id="inp-q-image" oninput="previewModalImgBB(this.value)" placeholder="https://i.ibb.co/xyz/circuit.png" class="form-input" style="font-size:12px;">
+              <div id="modal-img-preview" style="display:none; margin-top:10px; text-align:center;">
+                <img id="modal-img-tag" src="" alt="ImgBB Preview" style="max-height:160px; max-width:100%; border-radius:8px; border:1px solid #cbd5e1;">
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Option A *</label><input type="text" id="inp-q-a" required placeholder="Option A" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Option B *</label><input type="text" id="inp-q-b" required placeholder="Option B" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Option C *</label><input type="text" id="inp-q-c" required placeholder="Option C" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Option D *</label><input type="text" id="inp-q-d" required placeholder="Option D" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Correct *</label><select id="inp-q-correct" class="form-select"><option value="A">Option A</option><option value="B">Option B</option><option value="C">Option C</option><option value="D">Option D</option></select></div>
+            <div class="form-group"><label class="form-label">Class</label><select id="inp-q-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Subject</label><select id="inp-q-sub" class="form-select">${subjectOptions}</select></div>
+            <div class="form-group"><label class="form-label">Difficulty</label><select id="inp-q-diff" class="form-select"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option></select></div>
+            <div class="form-group full-width"><label class="form-label">Explanation</label><input type="text" id="inp-q-exp" placeholder="व्याख्या..." class="form-input"></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateQuestion();
+      }
+      else if (actionType === 'bulk_import_questions') {
+        title.innerText = "Bulk JSON Question Importer (10-100 Questions)";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width" style="background:#eef2ff; border:1px solid #c7d2fe; padding:12px; border-radius:8px;">
+              <div style="font-size:12px; font-weight:700; color:#3730a3; margin-bottom:6px;">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Quick 1-Click Sample Templates:
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button type="button" onclick="loadSampleQuestionsJson('physics')" class="btn btn-secondary btn-sm" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-atom"></i> 10 Physics MCQs</button>
+                <button type="button" onclick="loadSampleQuestionsJson('chemistry')" class="btn btn-secondary btn-sm" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-flask"></i> 10 Chemistry MCQs</button>
+                <button type="button" onclick="loadSampleQuestionsJson('biology')" class="btn btn-secondary btn-sm" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-dna"></i> 10 Biology MCQs</button>
+                <button type="button" onclick="loadSampleQuestionsJson('math')" class="btn btn-secondary btn-sm" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-square-root-variable"></i> 10 Math MCQs</button>
+                <button type="button" onclick="document.getElementById('inp-bulk-json').value=''; validateBulkJsonInput();" class="btn btn-danger btn-sm" style="font-size:11px; padding:4px 8px;">Clear</button>
+              </div>
+            </div>
+
+            <div class="form-group"><label class="form-label">Assign Class *</label><select id="inp-bulk-class" class="form-select">${classOptions}</select></div>
+            <div class="form-group"><label class="form-label">Assign Subject *</label><select id="inp-bulk-sub" class="form-select">${subjectOptions}</select></div>
+
+            <div class="form-group full-width">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <label class="form-label" style="margin:0;">Paste JSON Array *</label>
+                <span id="bulk-json-status" style="font-size:11px; font-weight:700; color:#64748b;">0 questions detected</span>
+              </div>
+              <textarea id="inp-bulk-json" oninput="validateBulkJsonInput()" rows="10" placeholder='[\n  {\n    "question_text": "कूलॉम का नियम क्या है?",\n    "option_a": "F = k*q1*q2/r^2",\n    "option_b": "F = m*a",\n    "option_c": "F = G*m1*m2/r^2",\n    "option_d": "F = q*E",\n    "correct_option": "A",\n    "image_url": "https://i.ibb.co/example.png",\n    "explanation": "विद्युत आवेशों के बीच आकर्षण/प्रतिकर्षण बल।",\n    "difficulty": "Medium"\n  }\n]' class="form-textarea" style="font-family:monospace; font-size:11px; line-height:1.4;"></textarea>
+            </div>
+          </div>
+        `;
+        submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload All to Question Bank';
+        submitBtn.onclick = () => submitBulkImportQuestions();
+      }
+      else if (actionType === 'create_announcement') {
+        title.innerText = "Post Flash Notice";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Notice Headline *</label><input type="text" id="inp-ann-title" required placeholder="2026 Model Papers Live" class="form-input"></div>
+            <div class="form-group full-width"><label class="form-label">Description *</label><textarea id="inp-ann-desc" rows="2" required placeholder="विवरण..." class="form-textarea"></textarea></div>
+            <div class="form-group"><label class="form-label">Badge</label><input type="text" id="inp-ann-badge" value="NEW" class="form-input"></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateAnnouncement();
+      }
+      else if (actionType === 'create_daily_update') {
+        title.innerText = "Post Daily Update";
+        body.innerHTML = `
+          <div class="form-grid">
+            <div class="form-group full-width"><label class="form-label">Title *</label><input type="text" id="inp-du-title" required placeholder="आज के महत्वपूर्ण सूत्र" class="form-input"></div>
+            <div class="form-group full-width"><label class="form-label">Content *</label><textarea id="inp-du-content" rows="3" required placeholder="विवरण..." class="form-textarea"></textarea></div>
+          </div>
+        `;
+        submitBtn.onclick = () => submitCreateDailyUpdate();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('main-modal').style.display = 'none';
+    }
+
+    function previewModalImgBB(url) {
+      const box = document.getElementById('modal-img-preview');
+      const tag = document.getElementById('modal-img-tag');
+      if (url && url.startsWith('http')) {
+        tag.src = url;
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    async function submitCreateClass() {
+      const name = document.getElementById('inp-class-name').value.trim();
+      const id = document.getElementById('inp-class-id').value.trim().toLowerCase();
+      const order = parseInt(document.getElementById('inp-class-order').value) || 1;
+      if (!name || !id) return showToast('Please fill all fields', 'warning');
+
+      const { error } = await supabaseClient.from('classes').insert([{ id, name, code: id.replace('class-', ''), order_index: order }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Class created!', 'success'); closeModal(); await preloadCurriculumLookups(); renderClasses(); }
+    }
+
+    async function submitCreateSubject() {
+      const name = document.getElementById('inp-sub-name').value.trim();
+      const classId = document.getElementById('inp-sub-class').value;
+      const code = document.getElementById('inp-sub-code').value.trim() || 'SUB';
+      const color = document.getElementById('inp-sub-color').value;
+      if (!name) return showToast('Subject name required', 'warning');
+
+      const id = `sub-${code.toLowerCase()}-${Date.now().toString().slice(-4)}`;
+      const { error } = await supabaseClient.from('subjects').insert([{ id, name, class_id: classId, code, color_hex: color, icon_name: 'book' }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Subject created!', 'success'); closeModal(); await preloadCurriculumLookups(); renderSubjects(); }
+    }
+
+    async function submitCreateChapter() {
+      const title = document.getElementById('inp-chap-title').value.trim();
+      const classId = document.getElementById('inp-chap-class').value;
+      const subjectId = document.getElementById('inp-chap-sub').value;
+      const num = parseInt(document.getElementById('inp-chap-num').value) || 1;
+      if (!title) return showToast('Title required', 'warning');
+
+      const id = `ch-${subjectId}-${num}`;
+      const { error } = await supabaseClient.from('chapters').insert([{ id, title, class_id: classId, subject_id: subjectId, chapter_number: num, description: title }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Chapter created!', 'success'); closeModal(); await preloadCurriculumLookups(); renderChapters(); }
+    }
+
+    async function uploadFileToSupabase(file, bucketName = 'pdf-documents') {
+      if (!file) throw new Error("No file selected");
+      const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = `${Date.now()}_${cleanFileName}`;
+
+      // Upload to Supabase Storage Bucket
+      const { data, error } = await supabaseClient.storage
+        .from(bucketName)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+          contentType: file.type || 'application/pdf'
+        });
+
+      if (error) {
+        // If specific bucket not found, attempt upload to default 'pdf-documents' bucket or notify
+        console.warn('Storage upload error:', error);
+        throw new Error(`Storage upload failed: ${error.message}. Make sure '${bucketName}' bucket exists with public access, or paste direct URL.`);
+      }
+
+      // Retrieve public URL
+      const { data: urlData } = supabaseClient.storage
+        .from(bucketName)
+        .getPublicUrl(filePath);
+
+      const publicUrl = urlData ? urlData.publicUrl : `${SUPABASE_CONFIG.url}/storage/v1/object/public/${bucketName}/${filePath}`;
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+      return { publicUrl, sizeMB, path: filePath };
+    }
+
+    function openPdfPreview(pdfUrl, title) {
+      if (!pdfUrl) {
+        showToast('No PDF URL available for preview', 'warning');
+        return;
+      }
+      const modal = document.getElementById('pdf-preview-modal');
+      const iframe = document.getElementById('pdf-preview-iframe');
+      const titleElem = document.getElementById('pdf-preview-title');
+      const urlText = document.getElementById('pdf-preview-url-text');
+      const extLink = document.getElementById('pdf-preview-external-link');
+
+      titleElem.innerText = title || 'PDF Document Preview';
+      urlText.innerText = pdfUrl;
+      extLink.href = pdfUrl;
+
+      // Handle Google Drive preview or standard PDF
+      let displayUrl = pdfUrl;
+      if (pdfUrl.includes('drive.google.com/file/d/')) {
+        const fileId = pdfUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+        if (fileId) displayUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+      } else if (!pdfUrl.endsWith('.pdf') && !pdfUrl.includes('supabase.co')) {
+        displayUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`;
+      }
+
+      iframe.src = displayUrl;
+      modal.style.display = 'flex';
+    }
+
+    function closePdfPreviewModal() {
+      const modal = document.getElementById('pdf-preview-modal');
+      const iframe = document.getElementById('pdf-preview-iframe');
+      if (iframe) iframe.src = '';
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function submitCreateBook() {
+      const btn = document.getElementById('modal-submit-btn');
+      const title = document.getElementById('inp-bk-title').value.trim();
+      const cat = document.getElementById('inp-bk-cat').value;
+      const classId = document.getElementById('inp-bk-class').value;
+      const subSelect = document.getElementById('inp-bk-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const file = document.getElementById('inp-bk-file')?.files[0];
+      const directUrl = document.getElementById('inp-bk-url')?.value.trim();
+
+      if (!title) return showToast('Please enter book title', 'warning');
+      if (!file && !directUrl) return showToast('Please select a PDF file OR paste a direct URL', 'warning');
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Uploading...';
+
+      try {
+        let pdfUrl = directUrl;
+        if (file) {
+          const upload = await uploadFileToSupabase(file, 'pdf-documents');
+          pdfUrl = upload.publicUrl;
+        }
+
+        const { error } = await supabaseClient.from('books').insert([{
+          id: 'bk_' + Date.now(),
+          title,
+          category: cat,
+          class_id: classId,
+          subject_id: subjectId,
+          subject_name: subjectName,
+          pdf_url: pdfUrl,
+          chapters_count: 12,
+          author: cat,
+          is_published: true
+        }]);
+
+        if (error) throw error;
+        showToast('Book PDF published to Student App successfully!', 'success');
+        closeModal();
+        renderBooks();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitCreateNote() {
+      const btn = document.getElementById('modal-submit-btn');
+      const title = document.getElementById('inp-nt-title').value.trim();
+      const classId = document.getElementById('inp-nt-class').value;
+      const subSelect = document.getElementById('inp-nt-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const file = document.getElementById('inp-nt-file')?.files[0];
+      const directUrl = document.getElementById('inp-nt-url')?.value.trim();
+
+      if (!title) return showToast('Please enter note title', 'warning');
+      if (!file && !directUrl) return showToast('Please select a PDF file OR paste a direct URL', 'warning');
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Uploading...';
+
+      try {
+        let pdfUrl = directUrl;
+        if (file) {
+          const upload = await uploadFileToSupabase(file, 'study-materials');
+          pdfUrl = upload.publicUrl;
+        }
+
+        const { error } = await supabaseClient.from('notes').insert([{
+          id: 'note_' + Date.now(),
+          title,
+          class_id: classId,
+          subject_id: subjectId,
+          subject_name: subjectName,
+          chapter_id: 'ch-1',
+          chapter_title: title,
+          content: pdfUrl,
+          summary: title,
+          key_points: [title],
+          is_published: true
+        }]);
+
+        if (error) throw error;
+        showToast('Study Notes PDF published successfully!', 'success');
+        closeModal();
+        renderNotes();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitCreateModelPaper() {
+      const btn = document.getElementById('modal-submit-btn');
+      const title = document.getElementById('inp-mp-title').value.trim();
+      const classId = document.getElementById('inp-mp-class').value;
+      const subSelect = document.getElementById('inp-mp-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const year = document.getElementById('inp-mp-year')?.value.trim() || '2026';
+      const file = document.getElementById('inp-mp-file')?.files[0];
+      const directUrl = document.getElementById('inp-mp-url')?.value.trim();
+
+      if (!title) return showToast('Please enter model paper title', 'warning');
+      if (!file && !directUrl) return showToast('Please select a PDF file OR paste a direct URL', 'warning');
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Uploading...';
+
+      try {
+        let pdfUrl = directUrl;
+        if (file) {
+          const upload = await uploadFileToSupabase(file, 'pdf-documents');
+          pdfUrl = upload.publicUrl;
+        }
+
+        const { error } = await supabaseClient.from('model_papers').insert([{
+          id: 'mp_' + Date.now(),
+          title,
+          class_id: classId,
+          subject_id: subjectId,
+          subject_name: subjectName,
+          year,
+          file_url: pdfUrl,
+          questions_count: 25,
+          duration_minutes: 90,
+          is_published: true
+        }]);
+
+        if (error) throw error;
+        showToast('Model Paper PDF published to Student App!', 'success');
+        closeModal();
+        renderModelPapers();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitCreatePYQ() {
+      const btn = document.getElementById('modal-submit-btn');
+      const title = document.getElementById('inp-pyq-title').value.trim();
+      const classId = document.getElementById('inp-pyq-class').value;
+      const subSelect = document.getElementById('inp-pyq-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const year = document.getElementById('inp-pyq-year')?.value.trim() || '2025';
+      const file = document.getElementById('inp-pyq-file')?.files[0];
+      const directUrl = document.getElementById('inp-pyq-url')?.value.trim();
+
+      if (!title) return showToast('Please enter paper title', 'warning');
+      if (!file && !directUrl) return showToast('Please select a PDF file OR paste a direct URL', 'warning');
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Uploading...';
+
+      try {
+        let pdfUrl = directUrl;
+        if (file) {
+          const upload = await uploadFileToSupabase(file, 'pdf-documents');
+          pdfUrl = upload.publicUrl;
+        }
+
+        const { error } = await supabaseClient.from('previous_year_papers').insert([{
+          id: 'pyq_' + Date.now(),
+          title,
+          class_id: classId,
+          subject_id: subjectId,
+          subject_name: subjectName,
+          year,
+          exam_type: 'Annual Board Exam',
+          file_url: pdfUrl,
+          questions_count: 30,
+          is_published: true
+        }]);
+
+        if (error) throw error;
+        showToast('Previous Year Paper PDF published successfully!', 'success');
+        closeModal();
+        renderPYQ();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitUploadPDF() {
+      const btn = document.getElementById('modal-submit-btn');
+      const title = document.getElementById('inp-pdf-title').value.trim();
+      const cat = document.getElementById('inp-pdf-cat').value;
+      const classId = document.getElementById('inp-pdf-class').value;
+      const subSelect = document.getElementById('inp-pdf-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const file = document.getElementById('inp-pdf-file')?.files[0];
+      const directUrl = document.getElementById('inp-pdf-url')?.value.trim();
+
+      if (!title) return showToast('Please enter document title', 'warning');
+      if (!file && !directUrl) return showToast('Please select a PDF file OR paste a direct URL', 'warning');
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Uploading...';
+
+      try {
+        let pdfUrl = directUrl;
+        let fileSize = '2.5 MB';
+        if (file) {
+          const upload = await uploadFileToSupabase(file, 'pdf-documents');
+          pdfUrl = upload.publicUrl;
+          fileSize = upload.sizeMB;
+        }
+
+        const { error } = await supabaseClient.from('pdf_documents').insert([{
+          id: 'pdf_' + Date.now(),
+          title,
+          description: title,
+          category: cat,
+          class_id: classId,
+          subject_id: subjectId,
+          subject_name: subjectName,
+          file_url: pdfUrl,
+          file_size: fileSize,
+          pages_count: 10,
+          is_published: true
+        }]);
+
+        if (error) throw error;
+        showToast('PDF Document saved and published to Student App!', 'success');
+        closeModal();
+        renderPDFs();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitCreateTest() {
+      const title = document.getElementById('inp-t-title').value.trim();
+      const classId = document.getElementById('inp-t-class').value;
+      const subSelect = document.getElementById('inp-t-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const duration = parseInt(document.getElementById('inp-t-duration').value) || 15;
+      const marks = parseInt(document.getElementById('inp-t-marks').value) || 20;
+      const isDaily = document.getElementById('inp-t-daily').checked;
+
+      if (!title) return showToast('Title required', 'warning');
+
+      const { error } = await supabaseClient.from('tests').insert([{ id: 'test_' + Date.now(), title, description: `Test for ${subjectName}`, class_id: classId, subject_id: subjectId, subject_name: subjectName, duration_minutes: duration, total_marks: marks, passing_marks: 8, questions_count: 10, is_daily_quiz: isDaily, is_published: true }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Test published to Student App!', 'success'); closeModal(); if (isDaily) renderDailyQuiz(); else renderTests(); }
+    }
+
+    async function submitCreateQuestion() {
+      const text = document.getElementById('inp-q-text').value.trim();
+      const imageUrl = document.getElementById('inp-q-image').value.trim();
+      const a = document.getElementById('inp-q-a').value.trim();
+      const b = document.getElementById('inp-q-b').value.trim();
+      const c = document.getElementById('inp-q-c').value.trim();
+      const d = document.getElementById('inp-q-d').value.trim();
+      const correct = document.getElementById('inp-q-correct').value;
+      const classId = document.getElementById('inp-q-class').value;
+      const subSelect = document.getElementById('inp-q-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+      const diff = document.getElementById('inp-q-diff').value;
+      const exp = document.getElementById('inp-q-exp').value.trim();
+
+      if (!text || !a || !b || !c || !d) return showToast('Fill question and all options', 'warning');
+
+      const { error } = await supabaseClient.from('questions').insert([{ id: 'q_' + Date.now(), question_text: text, image_url: imageUrl || null, option_a: a, option_b: b, option_c: c, option_d: d, correct_option: correct, explanation: exp, difficulty: diff, class_id: classId, subject_id: subjectId, subject_name: subjectName, marks: 1 }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Question saved!', 'success'); closeModal(); renderQuestions(); }
+    }
+
+    function loadSampleQuestionsJson(subject) {
+      const samples = {
+        physics: [
+          { question_text: "विद्युत क्षेत्र की तीव्रता का SI मात्रक क्या होता है?", option_a: "N/C", option_b: "J/C", option_c: "V·m", option_d: "C/N", correct_option: "A", explanation: "E = F/q अतः मात्रक N/C या V/m होता है।", difficulty: "Easy" },
+          { question_text: "गाउस का नियम किस प्रकार के पृष्ठों के लिए लागू होता है?", option_a: "केवल खुले पृष्ठ", option_b: "केवल बंद पृष्ठ", option_c: "समतल पृष्ठ", option_d: "सभी वक्र पृष्ठ", correct_option: "B", explanation: "गाउस का नियम केवल बंद पृष्ठ (Closed Surface) के लिए लागू होता है।", difficulty: "Medium" },
+          { question_text: "संधारित्र की धारिता का सूत्र क्या है?", option_a: "C = Q/V", option_b: "C = V/Q", option_c: "C = Q·V", option_d: "C = 1/QV", correct_option: "A", explanation: "धारिता C = आवेश / विभव = Q/V", difficulty: "Easy" },
+          { question_text: "किरचॉफ का प्रथम नियम (संधि नियम) किस संरक्षण पर आधारित है?", option_a: "ऊर्जा संरक्षण", option_b: "आवेश संरक्षण", option_c: "संवेग संरक्षण", option_d: "द्रव्यमान संरक्षण", correct_option: "B", explanation: "संधि पर आने वाली और जाने वाली धाराओं का योग शून्य होता है (आवेश संरक्षण)।", difficulty: "Medium" },
+          { question_text: "लेंज का नियम किस संरक्षण नियम का परिणाम है?", option_a: "आवेश", option_b: "ऊर्जा", option_c: "संवेग", option_d: "कोणीय संवेग", correct_option: "B", explanation: "लेंज का नियम ऊर्जा संरक्षण के सिद्धांत पर कार्य करता है।", difficulty: "Medium" },
+          { question_text: "एक आदर्श वोल्टमीटर का प्रतिरोध कितना होता है?", option_a: "शून्य", option_b: "अनंत (Infinity)", option_c: "100 ओम", option_d: "1000 ओम", correct_option: "B", explanation: "आदर्श वोल्टमीटर परिपथ से धारा नहीं लेता अतः इसका प्रतिरोध अनंत होता है।", difficulty: "Easy" },
+          { question_text: "प्रकाश के व्यतिकरण (Interference) के लिए आवश्यक शर्त क्या है?", option_a: "कला संबद्ध स्रोत (Coherent sources)", option_b: "विभिन्न आवृत्तियां", option_c: "अलग-अलग आयाम", option_d: "उच्च तीव्रता", correct_option: "A", explanation: "दोनों तरंगों के बीच कलांतर नियत होना चाहिए।", difficulty: "Hard" },
+          { question_text: "फोटोइलेक्ट्रिक प्रभाव में उत्सर्जित इलेक्ट्रॉनों की गतिज ऊर्जा किस पर निर्भर करती है?", option_a: "प्रकाश की तीव्रता", option_b: "प्रकाश की आवृत्ति", option_c: "धातु का आकार", option_d: "आपतन कोण", correct_option: "B", explanation: "आइंस्टीन समीकरण: K_max = hν - Φ", difficulty: "Hard" },
+          { question_text: "हाइड्रोजन परमाणु के प्रथम बोहर कक्षा की त्रिज्या कितनी होती है?", option_a: "0.529 Å", option_b: "1.0 Å", option_c: "0.0529 Å", option_d: "5.29 Å", correct_option: "A", explanation: "r₁ = 0.529 Angstrom", difficulty: "Medium" },
+          { question_text: "p-प्रकार के अर्धचालक में बहुसंख्यक आवेश वाहक कौन होते हैं?", option_a: "इलेक्ट्रॉन", option_b: "होल (Holes / कोटर)", option_c: "प्रोटॉन", option_d: "न्यूट्रॉन", correct_option: "B", explanation: "p-टाइप में त्रिसंयोजी अशुद्धि मिलाने से होल्स बहुसंख्यक होते हैं।", difficulty: "Easy" }
+        ],
+        chemistry: [
+          { question_text: "NaCl के क्रिस्टल में प्रत्येक Na+ आयन कितने Cl- आयनों से घिरा होता है?", option_a: "4", option_b: "6", option_c: "8", option_d: "12", correct_option: "B", explanation: "NaCl में उपसहसंयोजन संख्या 6:6 होती है।", difficulty: "Medium" },
+          { question_text: "मोललता (Molality) की इकाई क्या है?", option_a: "mol/L", option_b: "mol/kg", option_c: "g/L", option_d: "mol/m³", correct_option: "B", explanation: "मोल प्रति किलोग्राम विलायक।", difficulty: "Easy" },
+          { question_text: "शून्य कोटि अभिक्रिया के वेग स्थिरांक (k) का मात्रक क्या है?", option_a: "s⁻¹", option_b: "mol L⁻¹ s⁻¹", option_c: "L mol⁻¹ s⁻¹", option_d: "mol⁻¹ L s", correct_option: "B", explanation: "Rate = k[A]⁰ = k, अतः मात्रक mol L⁻¹ s⁻¹ होता है।", difficulty: "Hard" },
+          { question_text: "कोलराउश का नियम किसके लिए लागू होता है?", option_a: "केवल दुर्बल वैद्युत अपघट्य", option_b: "केवल प्रबल वैद्युत अपघट्य", option_c: "अनंत तनुता पर सभी अपघट्य", option_d: "ठोस पदार्थ", correct_option: "C", explanation: "अनंत तनुता पर सीमांत मोलर चालकता के लिए।", difficulty: "Medium" },
+          { question_text: "टिंडल प्रभाव किसमें देखा जाता है?", option_a: "वास्तविक विलयन", option_b: "कोलाइडल विलयन", option_c: "निलंबन", option_d: "ठोस में", correct_option: "B", explanation: "कोलाइडी कण प्रकाश का प्रकीर्णन करते हैं।", difficulty: "Easy" },
+          { question_text: "संक्रमण तत्वों (d-block) का सामान्य इलेक्ट्रॉनिक विन्यास क्या है?", option_a: "(n-1)d¹⁻¹⁰ ns¹⁻²", option_b: "(n-1)d¹⁰ ns²", option_c: "nd¹⁻¹⁰ (n+1)s¹", option_d: "ns² np⁶", correct_option: "A", explanation: "d-ब्लॉक का बाह्य विन्यास (n-1)d¹⁻¹⁰ ns¹⁻² होता है।", difficulty: "Medium" },
+          { question_text: "लुकास अभिकर्मक (Lucas Reagent) क्या है?", option_a: "सांद्र HCl + निर्जल ZnCl₂", option_b: "तनु H₂SO₄ + ZnSO₄", option_c: "HNO₃ + HCl", option_d: "NaOH + CaO", correct_option: "A", explanation: "1°, 2°, 3° अल्कोहल की पहचान के लिए उपयोग किया जाता है।", difficulty: "Medium" },
+          { question_text: "कैनिजारो अभिक्रिया कौन से एल्डिहाइड प्रदर्शित करते हैं?", option_a: "जिनमें α-हाइड्रोजन उपस्थित हो", option_b: "जिनमें α-हाइड्रोजन अनुपस्थित हो (जैसे HCHO)", option_c: "सभी कीटोन", option_d: "कार्बोक्सिलिक अम्ल", correct_option: "B", explanation: "HCHO और C₆H₅CHO में α-H नहीं होता।", difficulty: "Hard" },
+          { question_text: "प्रोटीन की प्राथमिक संरचना में कौन सा बंध पाया जाता है?", option_a: "हाइड्रोजन बंध", option_b: "पेप्टाइड बंध", option_c: "डाइसल्फाइड बंध", option_d: "आयनिक बंध", correct_option: "B", explanation: "अमीनो अम्लों के बीच -CO-NH- पेप्टाइड बंध बनता है।", difficulty: "Easy" },
+          { question_text: "विटामिन C का रासायनिक नाम क्या है?", option_a: "सिट्रिक अम्ल", option_b: "एस्कॉर्बिक अम्ल", option_c: "टार्टरिक अम्ल", option_d: "ऑक्सालिक अम्ल", correct_option: "B", explanation: "Vitamin C is Ascorbic Acid.", difficulty: "Easy" }
+        ],
+        biology: [
+          { question_text: "द्विनिषेचन (Double Fertilization) किस वर्ग के पादपों का विशिष्ट लक्षण है?", option_a: "ब्रायोफाइटा", option_b: "टेरिडोफाइटा", option_c: "जिम्नोस्पर्म", option_d: "एंजियोस्पर्म (आवृतबीजी)", correct_option: "D", explanation: "एंजियोस्पर्म में युग्मक संलयन और त्रिसंलयन होता है।", difficulty: "Medium" },
+          { question_text: "मानव शुक्राणु के अग्रपिंडक (Acrosome) में कौन सा एंजाइम होता है?", option_a: "हाइल्यूरोनिडेस (Hyaluronidase)", option_b: "पेप्सिन", option_c: "एमाइलेज", option_d: "लाइपेज", correct_option: "A", explanation: "अंडाणु की झिल्ली को भेदने में सहायक होता है।", difficulty: "Medium" },
+          { question_text: "मेंडल के द्विसंकर संकरण (Dihybrid Cross) का लक्षणप्ररूपी (Phenotypic) अनुपात क्या था?", option_a: "3:1", option_b: "9:3:3:1", option_c: "1:2:1", option_d: "9:7", correct_option: "B", explanation: "द्विसंकर संकरण F2 पीढ़ी का अनुपात 9:3:3:1 होता है।", difficulty: "Easy" },
+          { question_text: "DNA से mRNA बनने की प्रक्रिया को क्या कहते हैं?", option_a: "प्रतिकृतिकरण (Replication)", option_b: "अनुलेखन (Transcription)", option_c: "अनुवादन (Translation)", option_d: "उत्परिवर्तन", correct_option: "B", explanation: "Transcription: DNA -> mRNA.", difficulty: "Easy" },
+          { question_text: "रेस्ट्रिक्शन एंडोन्यूक्लिएज एंजाइम को क्या कहा जाता है?", option_a: "आण्विक कैंची (Molecular Scissors)", option_b: "आण्विक गोंद", option_c: "पॉलीमरेज", option_d: "वेक्टर", correct_option: "A", explanation: "DNA को विशिष्ट पहचान स्थलों पर काटता है।", difficulty: "Easy" },
+          { question_text: "एड्स (AIDS) का कारक HIV वायरस किस प्रकार का वायरस है?", option_a: "रेट्रोवायरस (Retrovirus)", option_b: "बैक्टीरियोफेज", option_c: "राइनोवायरस", option_d: "पॉक्सवायरस", correct_option: "A", explanation: "HIV में RNA आनुवंशिक पदार्थ होता है और रिवर्स ट्रांसक्रिप्टेज एंजाइम होता है।", difficulty: "Medium" },
+          { question_text: "चिपको आंदोलन की शुरुआत किस राज्य में हुई थी?", option_a: "उत्तराखंड", option_b: "झारखंड", option_c: "राजस्थान", option_d: "मध्य प्रदेश", correct_option: "A", explanation: "सुंदरलाल बहुगुणा द्वारा वनों की सुरक्षा हेतु।", difficulty: "Easy" },
+          { question_text: "मानव इंसुलिन का निर्माण किस जीवाणु के उपयोग से किया गया?", option_a: "ई. कोलाई (E. coli)", option_b: "लैक्टोबैसिलस", option_c: "राइजोबियम", option_d: "स्ट्रेप्टोकोकस", correct_option: "A", explanation: "जेनेटिक इंजीनियरिंग द्वारा ह्यूमूलिन का निर्माण।", difficulty: "Medium" },
+          { question_text: "ओजोन परत वायुमंडल के किस भाग में पाई जाती है?", option_a: "क्षोभमंडल", option_b: "समतापमंडल (Stratosphere)", option_c: "मध्यमंडल", option_d: "आयनमंडल", correct_option: "B", explanation: "समतापमंडल में ओजोन परत पराबैंगनी किरणों से रक्षा करती है।", difficulty: "Easy" },
+          { question_text: "बीटी-कपास (Bt Cotton) में 'Bt' का क्या अर्थ है?", option_a: "बायोटेक्नोलॉजी", option_b: "बैसिलस थुरिंजिएंसिस (Bacillus thuringiensis)", option_c: "बायोटॉक्सिन", option_d: "बॉटनिकल ट्रीटमेंट", correct_option: "B", explanation: "मृदा जीवाणु जिससे Cry टॉक्सिन जीन लिया गया है।", difficulty: "Medium" }
+        ],
+        math: [
+          { question_text: "d/dx (sin² x) का मान क्या होगा?", option_a: "2 sin x cos x = sin 2x", option_b: "cos² x", option_c: "2 cos x", option_d: "tan x", correct_option: "A", explanation: "अवकलन: 2 sin x · (cos x) = sin 2x", difficulty: "Easy" },
+          { question_text: "समाकलन ∫ e^(2x) dx का मान क्या है?", option_a: "(1/2) e^(2x) + C", option_b: "2 e^(2x) + C", option_c: "e^(2x) + C", option_d: "(1/4) e^(2x) + C", correct_option: "A", explanation: "∫ e^(ax) dx = (1/a) e^(ax) + C", difficulty: "Easy" },
+          { question_text: "यदि आव्यूह A का क्रम 2x3 और B का क्रम 3x2 है, तो AB का क्रम क्या होगा?", option_a: "2x2", option_b: "3x3", option_c: "2x3", option_d: "अस्तित्वहीन", correct_option: "A", explanation: "गुणा संभव है और परिणामी आव्यूह 2x2 होगा।", difficulty: "Medium" },
+          { question_text: "tan⁻¹(1) का मुख्य मान क्या है?", option_a: "π/4", option_b: "π/2", option_c: "π/6", option_d: "π/3", correct_option: "A", explanation: "tan(π/4) = 1, मुख्य शाखा (-π/2, π/2)", difficulty: "Easy" },
+          { question_text: "दो परस्पर लम्बवत सदिशों a⃗ और b⃗ का अदिश गुणनफल (a⃗ · b⃗) कितना होता है?", option_a: "0", option_b: "1", option_c: "-1", option_d: "|a||b|", correct_option: "A", explanation: "θ = 90°, cos 90° = 0", difficulty: "Easy" },
+          { question_text: "अवकल समीकरण (dy/dx)² + y = sin x की घात (Degree) क्या है?", option_a: "1", option_b: "2", option_c: "3", option_d: "परिभाषित नहीं", correct_option: "B", explanation: "उच्चतम कोटि के अवकलज की उच्चतम घात 2 है।", difficulty: "Medium" },
+          { question_text: "∫ (1 / (1 + x²)) dx का मान क्या है?", option_a: "tan⁻¹ x + C", option_b: "sin⁻¹ x + C", option_c: "log(1 + x²) + C", option_d: "cos⁻¹ x + C", correct_option: "A", explanation: "मानक समाकलन सूत्र।", difficulty: "Easy" },
+          { question_text: "एक सिक्के को दो बार उछाला जाता है, दोनों बार शीर्ष (Head) आने की प्रायिकता क्या है?", option_a: "1/2", option_b: "1/4", option_c: "3/4", option_d: "1/8", correct_option: "B", explanation: "P(HH) = 1/2 * 1/2 = 1/4", difficulty: "Easy" },
+          { question_text: "सारणिक |[1, 2], [3, 4]| का मान क्या होगा?", option_a: "-2", option_b: "2", option_c: "10", option_d: "-10", correct_option: "A", explanation: "1*4 - 2*3 = 4 - 6 = -2", difficulty: "Easy" },
+          { question_text: "वक्र y = x² के बिंदु (1, 1) पर स्पर्श रेखा की प्रवणता (Slope) क्या है?", option_a: "1", option_b: "2", option_c: "3", option_d: "0", correct_option: "B", explanation: "dy/dx = 2x, x=1 पर प्रवणता = 2", difficulty: "Medium" }
+        ]
+      };
+
+      const selected = samples[subject] || samples.physics;
+      const textarea = document.getElementById('inp-bulk-json');
+      if (textarea) {
+        textarea.value = JSON.stringify(selected, null, 2);
+        validateBulkJsonInput();
+      }
+    }
+
+    function validateBulkJsonInput() {
+      const textarea = document.getElementById('inp-bulk-json');
+      const status = document.getElementById('bulk-json-status');
+      if (!textarea || !status) return;
+
+      const val = textarea.value.trim();
+      if (!val) {
+        status.innerHTML = `<span style="color:#64748b;">0 questions detected</span>`;
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(val);
+        if (!Array.isArray(parsed)) {
+          status.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Error: Must be a JSON Array [ {...} ]</span>`;
+          return;
+        }
+
+        let validCount = 0;
+        parsed.forEach(item => {
+          if (item.question_text && item.option_a && item.option_b && item.correct_option) validCount++;
+        });
+
+        status.innerHTML = `<span style="color:#10b981; font-weight:800;"><i class="fa-solid fa-circle-check"></i> ${validCount} valid questions ready!</span>`;
+      } catch (e) {
+        status.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Invalid JSON Syntax: ${e.message.slice(0, 30)}...</span>`;
+      }
+    }
+
+    async function submitBulkImportQuestions() {
+      const btn = document.getElementById('modal-submit-btn');
+      const textarea = document.getElementById('inp-bulk-json');
+      const classId = document.getElementById('inp-bulk-class').value;
+      const subSelect = document.getElementById('inp-bulk-sub');
+      const subjectId = subSelect.value;
+      const subjectName = subSelect.options[subSelect.selectedIndex]?.dataset.name || '';
+
+      const raw = textarea.value.trim();
+      if (!raw) return showToast('Please paste or load a sample JSON array first', 'warning');
+
+      let questionsArray;
+      try {
+        questionsArray = JSON.parse(raw);
+        if (!Array.isArray(questionsArray) || questionsArray.length === 0) {
+          return showToast('JSON must be a non-empty array', 'error');
+        }
+      } catch (e) {
+        return showToast('Invalid JSON syntax: ' + e.message, 'error');
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Uploading ${questionsArray.length} questions...`;
+
+      const formatted = questionsArray.map((q, idx) => ({
+        id: 'q_bulk_' + Date.now() + '_' + (idx + 1),
+        question_text: q.question_text || 'प्रश्न',
+        image_url: q.image_url || null,
+        option_a: q.option_a || 'Option A',
+        option_b: q.option_b || 'Option B',
+        option_c: q.option_c || 'Option C',
+        option_d: q.option_d || 'Option D',
+        correct_option: (q.correct_option || 'A').toUpperCase().trim(),
+        explanation: q.explanation || '',
+        difficulty: q.difficulty || 'Medium',
+        class_id: q.class_id || classId,
+        subject_id: q.subject_id || subjectId,
+        subject_name: q.subject_name || subjectName,
+        marks: q.marks || 1
+      }));
+
+      try {
+        const { error } = await supabaseClient.from('questions').insert(formatted);
+        if (error) throw error;
+
+        showToast(`Successfully uploaded ${formatted.length} questions to Question Bank!`, 'success');
+        closeModal();
+        renderQuestions();
+      } catch (e) {
+        showToast('Upload error: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+      }
+    }
+
+    async function submitCreateAnnouncement() {
+      const title = document.getElementById('inp-ann-title').value.trim();
+      const desc = document.getElementById('inp-ann-desc').value.trim();
+      const badge = document.getElementById('inp-ann-badge').value.trim() || 'UPDATE';
+      if (!title || !desc) return showToast('Fill all fields', 'warning');
+
+      const { error } = await supabaseClient.from('announcements').insert([{ id: 'ann_' + Date.now(), title, description: desc, badge, is_active: true }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Announcement posted!', 'success'); closeModal(); renderAnnouncements(); }
+    }
+
+    async function submitCreateDailyUpdate() {
+      const title = document.getElementById('inp-du-title').value.trim();
+      const content = document.getElementById('inp-du-content').value.trim();
+      const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      if (!title || !content) return showToast('Fill all fields', 'warning');
+
+      const { error } = await supabaseClient.from('daily_updates').insert([{ id: 'du_' + Date.now(), title, content, date: dateStr, tag: 'DAILY UPDATE', is_pinned: false }]);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Daily update posted!', 'success'); closeModal(); renderDailyUpdates(); }
+    }
+
+    async function deleteRecord(tableName, id, reloadCallback) {
+      if (!confirm('Are you sure you want to delete this record from Supabase and Student App?')) return;
+      const { error } = await supabaseClient.from(tableName).delete().eq('id', id);
+      if (error) showToast(error.message, 'error');
+      else { showToast('Deleted successfully', 'success'); if (reloadCallback) reloadCallback(); }
+    }
+
+    async function togglePublish(tableName, id, newStatus, reloadCallback) {
+      const { error } = await supabaseClient.from(tableName).update({ is_published: newStatus }).eq('id', id);
+      if (error) showToast(error.message, 'error');
+      else { showToast(newStatus ? 'Published' : 'Unpublished', 'success'); if (reloadCallback) reloadCallback(); }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3800);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

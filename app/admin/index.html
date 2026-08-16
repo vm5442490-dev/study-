@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPER STUDY ADMIN &bull; Cloud Management Dashboard</title>
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client (Official CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Custom Admin Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. SECURE ADMIN AUTHENTICATION SCREEN
+       ========================================== -->
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h1 class="auth-title">Super Study Admin</h1>
+        <p class="auth-subtitle">Secure Supabase Master Control Portal</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleAdminLogin(event)">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">Admin Email Address <span class="req">*</span></label>
+          <input type="email" id="login-email" required value="vm544806@gmail.com" placeholder="vm544806@gmail.com" class="form-input" autocomplete="email">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">Password <span class="req">*</span></label>
+          <input type="password" id="login-password" required value="Vishal1234" placeholder="••••••••••••" class="form-input" autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="btn-login" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700;">
+          <i class="fa-solid fa-lock-open"></i> Sign In to Admin Panel
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center;">
+        <span style="font-size: 12px; color: #475569; font-weight: 600; display: block; margin-bottom: 4px;">
+          <i class="fa-solid fa-key text-amber-500"></i> Direct Login ID & Password
+        </span>
+        <code style="font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">vm544806@gmail.com</code> | <code style="font-size: 11px; color: #059669; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">Vishal1234</code>
+      </div>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #f1f5f9; text-align: center;">
+        <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">
+          <i class="fa-solid fa-shield text-emerald-500"></i> Role Protected &bull; Supabase RLS Active
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. MASTER ADMIN DASHBOARD (AFTER AUTH)
+       ========================================== -->
+  <div id="admin-app" style="display: none;">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <div class="sidebar-title">SUPER STUDY</div>
+          <div class="sidebar-sub">Master Admin</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav custom-scrollbar">
+        <!-- Main -->
+        <button class="nav-item active" onclick="navigateTo('dashboard')" id="nav-dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <!-- Content Management -->
+        <div class="nav-section-label">Academic Content</div>
+        <button class="nav-item" onclick="navigateTo('classes')" id="nav-classes">
+          <i class="fa-solid fa-school"></i>
+          <span>Classes</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('subjects')" id="nav-subjects">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Subjects</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('chapters')" id="nav-chapters">
+          <i class="fa-solid fa-list-ol"></i>
+          <span>Chapters</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('books')" id="nav-books">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>Books & NCERT</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('notes')" id="nav-notes">
+          <i class="fa-solid fa-note-sticky"></i>
+          <span>Study Notes</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('model_papers')" id="nav-model_papers">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>Model Papers 2026</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('pyq')" id="nav-pyq">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Previous Year (PYQ)</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('pdfs')" id="nav-pdfs">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>PDFs & Documents</span>
+        </button>
+
+        <!-- Test System -->
+        <div class="nav-section-label">Test & Examination</div>
+        <button class="nav-item" onclick="navigateTo('tests')" id="nav-tests">
+          <i class="fa-solid fa-pen-ruler"></i>
+          <span>Online Tests</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('daily_quiz')" id="nav-daily_quiz">
+          <i class="fa-solid fa-bolt text-amber-500"></i>
+          <span>Daily Live Quiz</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('questions')" id="nav-questions">
+          <i class="fa-solid fa-circle-question"></i>
+          <span>Question Bank (ImgBB)</span>
+        </button>
+
+        <!-- Communication & Live App -->
+        <div class="nav-section-label">Communication & Notifications</div>
+        <button class="nav-item" onclick="navigateTo('notifications')" id="nav-notifications">
+          <i class="fa-solid fa-bell text-amber-500"></i>
+          <span>Push Notifications</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('announcements')" id="nav-announcements">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Announcements & Flash</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('daily_updates')" id="nav-daily_updates">
+          <i class="fa-solid fa-newspaper"></i>
+          <span>Daily Updates & News</span>
+        </button>
+
+        <!-- Analytics -->
+        <div class="nav-section-label">Analytics & Records</div>
+        <button class="nav-item" onclick="navigateTo('test_attempts')" id="nav-test_attempts">
+          <i class="fa-solid fa-square-poll-vertical"></i>
+          <span>Student Test Attempts</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('leaderboard')" id="nav-leaderboard">
+          <i class="fa-solid fa-trophy text-amber-500"></i>
+          <span>Live Leaderboard</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="admin-profile-pill">
+          <div class="profile-avatar"><i class="fa-solid fa-user-shield"></i></div>
+          <div class="profile-info">
+            <div class="profile-name" id="admin-user-email">Admin</div>
+            <div class="profile-role">Master Admin</div>
+          </div>
+        </div>
+        <button onclick="handleAdminLogout()" class="btn btn-secondary btn-icon" title="Logout">
+          <i class="fa-solid fa-right-from-bracket text-rose-500"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      
+      <!-- TOP BAR -->
+      <header class="top-bar">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button class="mobile-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="breadcrumb-area">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-house"></i></span>
+            <span style="color: #cbd5e1;">/</span>
+            <span class="breadcrumb-page" id="page-title">Dashboard Overview</span>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="sync-badge">
+            <span class="sync-dot"></span>
+            <span>Student App Live</span>
+          </div>
+          <button onclick="refreshCurrentPage()" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT CONTAINER -->
+      <main class="content-container">
+        <div id="view-container">
+          <!-- Dynamic Content Loaded by app.js -->
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL OVERLAY (FOR CREATION & EDITS)
+       ========================================== -->
+  <div id="main-modal" class="modal-overlay">
+    <div class="modal-content custom-scrollbar">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Create Item</h3>
+        <button onclick="closeModal()" class="btn btn-secondary btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Injected Form Fields -->
+      </div>
+      <div class="modal-footer" id="modal-footer">
+        <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+        <button id="modal-submit-btn" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- Load Config & Master Application Logic -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Top Spark Star -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M54,25 L56.2,31.8 L63,34 L56.2,36.2 L54,43 L51.8,36.2 L45,34 L51.8,31.8 Z" />
+    <path
+        android:fillColor="#FFE082"
+        android:pathData="M70,28 L71.2,31.8 L75,33 L71.2,34.2 L70,38 L68.8,34.2 L65,33 L68.8,31.8 Z" />
+    <path
+        android:fillColor="#FFE082"
+        android:pathData="M38,28 L39.2,31.8 L43,33 L39.2,34.2 L38,38 L36.8,34.2 L33,33 L36.8,31.8 Z" />
+
+    <!-- Open Book Left Page -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,48 C43,44 32,44 26,47 C24.9,47.55 24,48.7 24,50 L24,76 C24,77.65 25.35,79 27,79 C33,76 43,76 52,80 L52,48 Z" />
+
+    <!-- Open Book Right Page -->
+    <path
+        android:fillColor="#F0F4F8"
+        android:pathData="M56,48 C65,44 76,44 82,47 C83.1,47.55 84,48.7 84,50 L84,76 C84,77.65 82.65,79 81,79 C75,76 65,76 56,80 L56,48 Z" />
+
+    <!-- Book Spine / Center Divider -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M52,48 L56,48 L56,80 L52,80 Z" />
+
+    <!-- Book Page Lines (Left) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#BBDEFB"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M30,55 C36,53 43,53 48,55 M30,62 C36,60 43,60 48,62 M30,69 C36,67 43,67 48,69" />
+
+    <!-- Book Page Lines (Right) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#90CAF9"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M60,55 C65,53 72,53 78,55 M60,62 C65,60 72,60 78,62 M60,69 C65,67 72,67 78,69" />
+
+    <!-- Bottom Ribbon / Bookmark -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M53,78 L55,78 L55,86 L54,84.5 L53,86 Z" />
+</vector>

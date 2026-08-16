@@ -1,0 +1,6 @@
+{
+  "name": "SUPER STUDY",
+  "description": "All-in-one exam prep app for Books, NCERT, Notes, Model Papers, PYQ, Question Bank, Daily Quizzes, Tests & Leaderboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
